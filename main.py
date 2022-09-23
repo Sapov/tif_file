@@ -17,10 +17,14 @@ def create_file_list(out_path):
             list_file.write(file_name)
             print(file_name)
             img_properis = tiff.check_tiff(lst_f[file],'banner')
-            img_propertis_file = f'Ширина: {img_properis[0]} см\nДлина: {img_properis[1]} см\nЦветовая модель: {img_properis[2]} \nРазрешение печати: {img_properis[3]} dpi\n\n'
+            img_propertis_file = f'Ширина: {img_properis[0]} см\nДлина: {img_properis[1]} см\nЦветовая модель: {img_properis[2]} \nРазрешение печати: {img_properis[3]} dpi\n'
             print(img_propertis_file)
             list_file.write(img_propertis_file)
-
+            file_stat = os.stat(lst_f[file])
+            size_file = f'Размер файла: {round(file_stat.st_size / (1024 * 1024), 2)} Mb\n\n'
+            # print((os.path.getsize(lst_f[file])/1024*1024,"MB" ))
+            print(size_file)
+            list_file.write(size_file)
     list_file.close()
 
 # out_path = input("Введите путь к каталогу: ")
