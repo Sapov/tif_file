@@ -13,7 +13,7 @@ def check_tiff(file_name, material):
 
     if material == 'banner':
         dpi = 72
-    elif material == 'interier':
+    elif material == 'film':
         dpi = 150
 
     with Image.open(file_name) as img:

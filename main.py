@@ -2,9 +2,8 @@ import os
 from datetime import date
 
 import tiff
-from tiff import check_tiff
 
-def create_file_list(out_path):
+def create_file_list(out_path, material):
     os.chdir(out_path)  # переходим в указанный катлог
     lst_f = os.listdir()  # читаем имена файлов в список
     list_file = open(f' files_for_print_{date.today()}.txt', "w")  # открываем файл на чтение и пишем имена файлов
@@ -16,7 +15,7 @@ def create_file_list(out_path):
             file_name = f'File #{file + 1}: {lst_f[file]}\n'
             list_file.write(file_name)
             print(file_name)
-            img_properis = tiff.check_tiff(lst_f[file],'banner')
+            img_properis = tiff.check_tiff(lst_f[file], material)
             img_propertis_file = f'Ширина: {img_properis[0]} см\nДлина: {img_properis[1]} см\nЦветовая модель: {img_properis[2]} \nРазрешение печати: {img_properis[3]} dpi\n'
             print(img_propertis_file)
             list_file.write(img_propertis_file)
@@ -27,6 +26,8 @@ def create_file_list(out_path):
             list_file.write(size_file)
     list_file.close()
 
-# out_path = input("Введите путь к каталогу: ")
 
-create_file_list(out_path='C:/Users/User/Downloads/баннер220922')
+out_path = input("Введите путь к каталогу: ")
+material = input("Материал Баннер (banner) или Пленка (film)?: ")
+
+create_file_list(out_path, material)
