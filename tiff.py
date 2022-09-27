@@ -1,3 +1,4 @@
+import PIL
 from PIL import Image
 import os
 
@@ -15,16 +16,24 @@ def check_tiff(file_name, material):
         dpi = 72
     elif material == 'film':
         dpi = 150
+    try:
+        with Image.open(file_name) as img:
+            s = img.size
+            width = round(2.54 * s[0] / dpi, 1)
+            length = round(2.54 * s[1] / dpi, 1)
+            # print("Ширина: ", width, 'см.\n', 'Длина :', length, 'см.')
+            color_mode = img.mode
+            if color_mode == 'CMYK':
+                print('[x]........Color Mode Valid: ', color_mode, '\n')
+            else:
+                print("Цветовая модель не соответствует требованиям, нужно перевести в CMYK")
+    except PIL.UnidentifiedImageError:
+        return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
+Решение: Photoshop / слои / выполнить сведение''')
 
-    with Image.open(file_name) as img:
-        s = img.size
-        width = round(2.54 * s[0] / dpi, 1)
-        length = round(2.54 * s[1] / dpi, 1)
-        # print("Ширина: ", width, 'см.\n', 'Длина :', length, 'см.')
-        color_mode = img.mode
-        if color_mode == 'CMYK':
-            print('[x]........Color Mode Valid: ', color_mode, '\n')
-        else:
-            print("Цветовая модель не соответствует требованиям, нужно перевести в CMYK")
+
 
     return (width, length, color_mode, dpi)
+
+
+# check_tiff('C:/Users/User/Downloads/баннер_440/file_error.tif', 'banner')
