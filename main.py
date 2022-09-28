@@ -12,7 +12,6 @@ def list_file(path_dir):
         :return: возвращаем список list_files
         '''
     os.chdir(path_dir)  # переходим в указанный катлог
-    print(os.listdir())
     return os.listdir()  # читаем имена файлов в список
 
 
@@ -24,14 +23,7 @@ def calculation(width, length, material):
     :param material: материал
     :return: стоимость
     '''
-    global price_material
-    if material == 'banner':
-        # 190/10 так как считаем в см а не в метрах
-        price_material = 190
-    elif material == "film":
-        # 230/10 так как считаем в см а не в метрах
-        price_material = 230
-
+    price_material = data.price_material.get(material)
     return width * length * price_material
 
 
@@ -46,17 +38,14 @@ def check_tiff(file_name, material):
 
     try:
         with Image.open(file_name) as img:
-            if material == 'banner':
-                # dpi = 72
-                print(data.resolution.get('banner'))
-                dpi = data.resolution.get('banner')
-            elif material == 'film':
-                # dpi = 150
-                print(data.resolution.get('film'))
-                dpi = data.resolution.get('film')
+            dpi = data.resolution.get(material)
+            print(dpi)
+
             s = img.size
             width = round(2.54 * s[0] / dpi, 1)
             length = round(2.54 * s[1] / dpi, 1)
+
+
             # print("Ширина: ", width, 'см.\n', 'Длина :', length, 'см.')
             color_mode = img.mode
             if color_mode == 'CMYK':
@@ -67,7 +56,7 @@ def check_tiff(file_name, material):
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
 Решение: Photoshop / слои / выполнить сведение''')
 
-    return (width, length, color_mode, dpi)
+    return width, length, color_mode, dpi
 
 
 def create_file_list(out_path, material):
@@ -115,14 +104,11 @@ def create_file_list(out_path, material):
 
 
 
+if __name__ == '__main__':
 
-
-out_path = input("Введите путь к каталогу: ")
-
-
-material = input("Материал Баннер (banner) или Пленка (film)?: ")
-
-# create_file_list('C:/Users/User/Downloads/баннер220922', 'banner')
-create_file_list(out_path, material)
+    out_path = input("Введите путь к каталогу: ")
+    material = input("Материал Баннер (banner) или Пленка (film)?: ")
+    # create_file_list('C:/Users/User/Downloads/баннер220922', 'banner')
+    create_file_list(out_path, material)
 
 
