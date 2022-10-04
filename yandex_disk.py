@@ -1,5 +1,8 @@
 import requests
 import data
+from progress.bar import Bar
+from datetime import date
+
 
 TOKEN = data.yandex_TOKEN
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
@@ -12,7 +15,7 @@ def create_folder(path):
     print(requests.put(f'{URL}?path={path}', headers=headers))
 
 
-create_folder('vasa3')
+create_folder(f'upload/Стиль Н/{date.today()}')
 
 def upload_file(loadfile, savefile, replace=False):
     """Загрузка файла.
@@ -40,6 +43,6 @@ def backup(savepath, loadpath):
     bar.finish()
 
 
-if __name__ == '__main__':
-    #backup('Backup', r'C:\Files\backup')
-    backup('Backup', os.getcwd())
+# if __name__ == '__main__':
+#     #backup('Backup', r'C:\Files\backup')
+#     backup('Backup', os.getcwd())
