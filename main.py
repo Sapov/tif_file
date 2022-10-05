@@ -11,15 +11,18 @@ def list_file(path_dir):
     return os.listdir()  # читаем имена файлов в список
 
 
-def only_tif(lst: list):  # List whith Only TIF Files
-    lst_tif = []
-    for i in lst:
-        if i.endswith('.tif'):
-            lst_tif.append(i)
-    return lst_tif
+# def only_tif(lst: list):  # List whith Only TIF Files
+#     lst_tif = []
+#     for i in lst:
+#         if i.endswith('.tif'):
+#             lst_tif.append(i)
+#     return lst_tif
+
+def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
+    return [i for i in lst if i.endswith('.tif')]
 
 
-def check_tiff(file_name, material):
+def check_tiff(file_name: str, material: str):
     try:
         with Image.open(file_name) as img:
             dpi = data.resolution.get(material)
@@ -48,10 +51,9 @@ def color_mode(file_name):
         return mode
 
 
-def size_file(name_file):
+def size_file(name_file: str) -> float:
     # Размер в МБ
     file_stat = os.stat(name_file)
-    # return f'Размер файла: {round(file_stat.st_size / (1024 * 1024), 2)} Mb\n'
     return round(file_stat.st_size / (1024 * 1024), 2)
 
 
