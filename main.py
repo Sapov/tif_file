@@ -1,41 +1,25 @@
 from datetime import date
 import PIL
 from PIL import Image
-import os
+import os, zipfile
 import data
+from tqdm import tqdm
 
 
 def list_file(path_dir):
-    '''
-    получаем список файлов данного каталога
-        :param path_dir: путь до каталога
-        :return: возвращаем список list_files
-        '''
     os.chdir(path_dir)  # переходим в указанный катлог
     return os.listdir()  # читаем имена файлов в список
 
 
-def calculation(width, length, material):
-    '''
-    расчет стоимости печати
-    :param width: Ширина
-    :param length: длина
-    :param material: материал
-    :return: стоимость
-    '''
-    price_material = data.price_material.get(material)
-    return width * length * price_material
+def only_tif(lst: list):  # List whith Only TIF Files
+    lst_tif = []
+    for i in lst:
+        if i.endswith('.tif'):
+            lst_tif.append(i)
+    return lst_tif
 
 
 def check_tiff(file_name, material):
-    '''
-    :param file_name: Принимаем имя файла
-    :param material:  принимаем параметре материала banner  -> 72 dpi или interier ->150 dpi
-    :return:
-    # проверка что файлы для печати баннеров пеатаются с разрешением 72 DPI
-    # а файлы с для печати пленки или инреьерной печати разрешением 150 DPI
-    '''
-
     try:
         with Image.open(file_name) as img:
             dpi = data.resolution.get(material)
@@ -45,74 +29,83 @@ def check_tiff(file_name, material):
     except PIL.UnidentifiedImageError:
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
 Решение: Photoshop / слои / выполнить сведение''')
-
     return width, length, dpi
 
-def color_mode(material):
+
+def color_mode(file_name):
     try:
         with Image.open(file_name) as img:
-            color_mode = img.mode
-            if color_mode == 'CMYK':
-                print('[x]........Color Mode Valid: ', color_mode, '\n')
-                return color_mode
+            mode = img.mode
+            if mode == 'CMYK':
+
+                return mode
             else:
                 print("Цветовая модель не соответствует требованиям, нужно перевести в CMYK")
-                return color_mode
+                return mode
     except PIL.UnidentifiedImageError:
         print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
             Решение: Photoshop / слои / выполнить сведение''')
-        return color_mode
+        return mode
 
 
-def create_file_list(out_path, material):
-    '''
-    Функиця записывает в файл:
-     1) имена файлов
-     2) размер печати файлов
-     3) размер файла в мб
-     3) стоимость печати каждого фйала
-    :param out_path:
-    :return:
-    '''
-    lst_f = list_file(out_path)
+def size_file(name_file):
+    # Размер в МБ
+    file_stat = os.stat(name_file)
+    # return f'Размер файла: {round(file_stat.st_size / (1024 * 1024), 2)} Mb\n'
+    return round(file_stat.st_size / (1024 * 1024), 2)
+
+
+def write_file_txt(name: str, list_text: str):
+    with open(f' {name}_{date.today()}.txt', "w") as file:
+        print(list_text, file=file)
+
+
+def calculation(width, length, material):
+    price_material = data.price_material.get(material)
+    return round(width * length * price_material, 2)
+
+
+def arh(list_files: list, material_name: str):  # add tif to ZIP file
+    if os.path.isfile(f'{material_name}_{date.today()}.zip'):
+        print('Файл уже существует, архивация пропущена')
+    else:
+        print("Архивируем файлы:", *list_files)
+        for name in tqdm(list_files):
+            new_arh = zipfile.ZipFile(f'{material_name}_{date.today()}.zip', "a")
+            new_arh.write(name, compress_type=zipfile.ZIP_DEFLATED)
+            new_arh.close()
+
+
+if __name__ == "__main__":
+    path_dir = input("Введите путь к каталогу: ")
+    lst_files = list_file(path_dir)
+    material = input("Материал Баннер (banner_440) или Пленка (film)?: ")
+    lst_tif = only_tif(lst_files)
+    lst_all = []
     itog = 0
-    with open(f' files_for_print_{date.today()}.txt', "w") as file_in_list:
+    with open(f' {material}_for_print_{date.today()}.txt', "w") as file:
 
+        for i in range(len(lst_tif)):
+            w_l_dpi = check_tiff(lst_tif[i], material)
+            # lst_all.append([lst_tif[i], check_tiff(lst_tif[i], 'banner'), color_mode(lst_tif[i]),
+            #                 size_file(lst_tif[i]), calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, 'banner')])
+            # print(lst_all)
+            print(f'File # {i + 1}: {lst_tif[i]}')
 
-        zaglavie_fila = f' {"-" * 14} Список файлов для печати на: {date.today()}{"-" * 10}\n\n'
-        file_in_list.write(zaglavie_fila)
-        print(zaglavie_fila)
-        # Пишем в файл имена файлов
-        for name_file in range(len(lst_f)):
-            if lst_f[name_file].endswith('.tif'):
-                # file_name = f'File #{name_file + 1}: {lst_f[name_file]}\n'
-                # file_in_list.write(file_name)
+            print(f'Ширина: {w_l_dpi[0]}см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]}dpi')
+            print(f'Цветовая модель: {color_mode(lst_tif[i])}')
+            print(f'Размер: {size_file(lst_tif[i])} Мб')
+            print("-" * 40)
 
-                # Ширина длина
-                img_properis = check_tiff(lst_f[name_file], material)
-                img_propertis_file = f'Ширина: {img_properis[0]} см\nДлина: {img_properis[1]} см\nРазрешение печати: {img_properis[2]} dpi\n'
-                print(img_propertis_file)
-                file_in_list.write(img_propertis_file)
+            print(f'Стоимость:{calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)} руб. ')
+            itog = itog + calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
+            file.write(f'File # {i + 1}: {lst_tif[i]}\n')
+            file.write(f'Ширина: {w_l_dpi[0]} см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi\n')
+            file.write(f'Цветовая модель: {color_mode(lst_tif[i])}\n')
+            file.write(f'Размер: {size_file(lst_tif[i])} Мб\n')
+            file.write("-" * 40 + "\n")
+            file.write(f'Стоимость:{calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)} руб. \n\n')
+        file.write(f'Итого: {round(itog, 2)} руб.')
+    print(f'Итого: {round(itog, 2)} руб.')
 
-                # Размер в МБ
-                file_stat = os.stat(lst_f[name_file])
-                size_file = f'Размер файла: {round(file_stat.st_size / (1024 * 1024), 2)} Mb\n'
-                print(size_file)
-                file_in_list.write(size_file)
-
-                # # Стоимость печати
-
-                price = round(calculation(img_properis[0] / 100, img_properis[1] / 100, material), 2)
-                file_in_list.write("-" * 25 + " \n")
-                file_in_list.write(f'Стоимость {price} руб.\n\n')
-                print(price, 'РУБ.')
-                itog = itog + price
-        print('ИТОГО:', round(itog, 2))
-        file_in_list.write(f'ИТОГО: {round(itog, 2)} руб.\n\n')
-def file_write(lsit, name_file):
-
-if __name__ == '__main__':
-    out_path = input("Введите путь к каталогу: ")
-    material = input("Материал Баннер (banner) или Пленка (film)?: ")
-    # create_file_list('C:/Users/User/Downloads/баннер220922', 'banner')
-    create_file_list(out_path, material)
+    arh(lst_tif, material)

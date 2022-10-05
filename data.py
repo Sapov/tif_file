@@ -1,10 +1,9 @@
-resolution = {'banner': 72, 'film': 150}
-price_material = {'banner': 200, 'film': 190}  # на 28-09-2022
-yandex_TOKEN = 'y0_AgBAAAAMkDzhAAhvewAAAADPmpIrUynuQXFiRnOSaU0OBRfE1EUi1Jw'
+resolution = {'banner_440': 72, 'film': 150}
+price_material = {'banner_440': 200, 'film': 190}  # на 28-09-2022
 
 propertis_material = {'banner_440': [72, 200, 'баннер ламинированный 440 грама']}
 # где
 # banner440 -имя переменной
 # 72 - разрешение печати
-# 200 - стоимост в руб.
-# баннер ламинированный 440 грам - название материала
+# 200 - стоимость в руб за 1 м кв.
+# "баннер ламинированный 440 грамм" - название материала

@@ -2,9 +2,10 @@ import requests
 import data
 from progress.bar import Bar
 from datetime import date
+yandex_TOKEN = 'y0_AgBAAAAMkDzhAAhvewAAAADPmpIrUynuQXFiRnOSaU0OBRfE1EUi1Jw'
 
 
-TOKEN = data.yandex_TOKEN
+TOKEN = yandex_TOKEN
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
