@@ -6,36 +6,30 @@ import data
 from tqdm import tqdm
 
 
-def list_file(path_dir):
+def list_file(path_dir: str) -> list[str]:
     os.chdir(path_dir)  # переходим в указанный катлог
     return os.listdir()  # читаем имена файлов в список
 
-
-# def only_tif(lst: list):  # List whith Only TIF Files
-#     lst_tif = []
-#     for i in lst:
-#         if i.endswith('.tif'):
-#             lst_tif.append(i)
-#     return lst_tif
 
 def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
     return [i for i in lst if i.endswith('.tif')]
 
 
-def check_tiff(file_name: str, material: str):
+def check_tiff(file_name: str):
     try:
         with Image.open(file_name) as img:
-            dpi = data.resolution.get(material)
             s = img.size
-            width = round(2.54 * s[0] / dpi, 1)
-            length = round(2.54 * s[1] / dpi, 1)
+            resolution = round(img.info['dpi'][0],0)
+            width = round(2.54 * s[0] / resolution,0)
+            length = round(2.54 * s[1] / resolution,0)
+
     except PIL.UnidentifiedImageError:
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
 Решение: Photoshop / слои / выполнить сведение''')
-    return width, length, dpi
+    return width, length, resolution
 
 
-def color_mode(file_name):
+def color_mode(file_name: str) -> str:
     try:
         with Image.open(file_name) as img:
             mode = img.mode
@@ -62,7 +56,7 @@ def write_file_txt(name: str, list_text: str):
         print(list_text, file=file)
 
 
-def calculation(width, length, material):
+def calculation(width, length, material: str):
     price_material = data.price_material.get(material)
     return round(width * length * price_material, 2)
 
@@ -88,13 +82,13 @@ if __name__ == "__main__":
     with open(f' {material}_for_print_{date.today()}.txt', "w") as file:
 
         for i in range(len(lst_tif)):
-            w_l_dpi = check_tiff(lst_tif[i], material)
+            w_l_dpi = check_tiff(lst_tif[i])
             # lst_all.append([lst_tif[i], check_tiff(lst_tif[i], 'banner'), color_mode(lst_tif[i]),
             #                 size_file(lst_tif[i]), calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, 'banner')])
             # print(lst_all)
             print(f'File # {i + 1}: {lst_tif[i]}')
 
-            print(f'Ширина: {w_l_dpi[0]}см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]}dpi')
+            print(f'Ширина: {w_l_dpi[0]}см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi')
             print(f'Цветовая модель: {color_mode(lst_tif[i])}')
             print(f'Размер: {size_file(lst_tif[i])} Мб')
             print("-" * 40)
