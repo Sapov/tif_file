@@ -4,6 +4,8 @@ from PIL import Image
 import os, zipfile
 import data
 from tqdm import tqdm
+import yandex_disk
+import time
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -105,3 +107,13 @@ if __name__ == "__main__":
     print(f'Итого: {round(itog, 2)} руб.')
 
     arh(lst_tif, material)
+
+    path_save = f'upload/Стиль Н/{date.today()}'
+    zip_name = f'{material}_{date.today()}.zip'
+    print(f'{path_dir}\{zip_name}')
+    print(f'{path_save}/{zip_name}')
+
+    yandex_disk.create_folder(path_save)
+    yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
+
+# upload_file(r"C:\temp\1.7z", 'TEST2/1.7z')
