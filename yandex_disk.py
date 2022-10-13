@@ -1,7 +1,6 @@
 import requests
 import data
 from ya_token import yandex_TOKEN
-from datetime import date
 
 TOKEN = yandex_TOKEN
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
@@ -13,8 +12,6 @@ def create_folder(path):
     requests.put(f'{URL}?path={path}', headers=headers)
     print(requests.put(f'{URL}?path={path}', headers=headers))
 
-
-# create_folder(f'upload/Стиль Н/{date.today()/{material}}')
 
 
 def delete_folder(path: str):
@@ -54,6 +51,19 @@ def backup(savepath, loadpath):
                         '{0}/{1}{2}/{3}'.format(savepath, date_folder, address.replace(loadpath, "").replace("\\", "/"),
                                                 file))
 
+
 # if __name__ == '__main__':
 #     #backup('Backup', r'C:\Files\backup')
 #     backup('Backup', os.getcwd())
+
+def get_download_link(path):
+    """получаем сссылку к папке на скачивание"""
+    requests.get(f'{URL}/download?path={path}', headers=headers)
+    print(requests.get(f'{URL}/download?path={path}', headers=headers))
+    r = requests.get(f'{URL}/download?path={path}&fields=list', headers=headers)
+    print(r.text)
+
+    # print(f'{URL}/download?path={path}')
+
+
+get_download_link('upload/Стиль Н/2022-10-13')
