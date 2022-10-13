@@ -13,7 +13,6 @@ def create_folder(path):
     print(requests.put(f'{URL}?path={path}', headers=headers))
 
 
-
 def delete_folder(path: str):
     """deleting папки. \n path: Путь к создаваемой папке."""
     requests.delete(f'{URL}?path={path}', headers=headers)
@@ -56,14 +55,13 @@ def backup(savepath, loadpath):
 #     #backup('Backup', r'C:\Files\backup')
 #     backup('Backup', os.getcwd())
 
-def get_download_link(path):
+def get_download_link(path: str) -> str:
     """получаем сссылку к папке на скачивание"""
     requests.get(f'{URL}/download?path={path}', headers=headers)
     print(requests.get(f'{URL}/download?path={path}', headers=headers))
     r = requests.get(f'{URL}/download?path={path}&fields=list', headers=headers)
-    print(r.text)
-
-    # print(f'{URL}/download?path={path}')
+    di = r.json()
+    return di['href']
 
 
 get_download_link('upload/Стиль Н/2022-10-13')
