@@ -1,11 +1,14 @@
 from datetime import date
 import PIL
+import pyinputplus
 from PIL import Image
 import os, zipfile
 import data
 from tqdm import tqdm
 import yandex_disk
 import time
+import pyinputplus as pyip
+import pyip
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -21,9 +24,9 @@ def check_tiff(file_name: str):
     try:
         with Image.open(file_name) as img:
             s = img.size
-            resolution = round(img.info['dpi'][0],0)
-            width = round(2.54 * s[0] / resolution,0)
-            length = round(2.54 * s[1] / resolution,0)
+            resolution = round(img.info['dpi'][0], 0)
+            width = round(2.54 * s[0] / resolution, 0)
+            length = round(2.54 * s[1] / resolution, 0)
 
     except PIL.UnidentifiedImageError:
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
@@ -74,10 +77,19 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
             new_arh.close()
 
 
+def select_material() -> str:
+    '''Функция выбора материала для печати'''
+    # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
+    return pyip.inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
+
+
 if __name__ == "__main__":
     path_dir = input("Введите путь к каталогу: ")
     lst_files = list_file(path_dir)
-    material = input("Материал Баннер (banner_440) или Пленка (film)?: ")
+    # assert len(list_file) != 0, 'Список list_file не должен быть пустым'
+
+    # material = input("Материал Баннер (banner_440) или Пленка (film)?: ")
+    material = select_material()
     lst_tif = only_tif(lst_files)
     lst_all = []
     itog = 0
@@ -108,12 +120,10 @@ if __name__ == "__main__":
 
     arh(lst_tif, material)
 
-    path_save = f'upload/Стиль Н/{date.today()}'
+    path_save = f'upload/Nokleyka/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
     yandex_disk.create_folder(path_save)
     yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
-
-# upload_file(r"C:\temp\1.7z", 'TEST2/1.7z')

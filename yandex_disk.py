@@ -55,13 +55,13 @@ def backup(savepath, loadpath):
 #     #backup('Backup', r'C:\Files\backup')
 #     backup('Backup', os.getcwd())
 
-def get_download_link(path: str) -> str:
-    """получаем сссылку к папке на скачивание"""
-    requests.get(f'{URL}/download?path={path}', headers=headers)
-    print(requests.get(f'{URL}/download?path={path}', headers=headers))
-    r = requests.get(f'{URL}/download?path={path}&fields=list', headers=headers)
-    di = r.json()
-    return di['href']
-
-
-get_download_link('upload/Стиль Н/2022-10-13')
+# def get_download_link(path: str) -> str:
+#     """получаем сссылку к папке на скачивание"""
+#     requests.get(f'{URL}/download?path={path}', headers=headers)
+#     print(requests.get(f'{URL}/download?path={path}', headers=headers))
+#     r = requests.get(f'{URL}/download?path={path}&fields=list', headers=headers)
+#     di = r.json()
+#     return di['href']
+#
+#
+# get_download_link('upload/Стиль Н/2022-10-13')
