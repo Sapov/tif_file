@@ -124,7 +124,7 @@ if __name__ == "__main__":
         file.write(f'Итого: {round(itog, 2)} руб.')
     print(f'Итого: {round(itog, 2)} руб.')
 
-    arh(lst_tif, material)
+    arh(lst_tif, material) # aрхивация
 
     path_save = f'upload/Стиль Н/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
