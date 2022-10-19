@@ -1,14 +1,11 @@
 from datetime import date
 import PIL
-import pyinputplus
 from PIL import Image
 import os, zipfile
 import data
 from tqdm import tqdm
 import yandex_disk
-import time
 import pyinputplus as pyip
-import pyip
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -22,6 +19,7 @@ def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
 
 def check_tiff(file_name: str):
     try:
+        Image.MAX_IMAGE_PIXELS = 1000000000
         with Image.open(file_name) as img:
             s = img.size
             resolution = round(img.info['dpi'][0], 0)
@@ -35,6 +33,8 @@ def check_tiff(file_name: str):
 
 
 def color_mode(file_name: str) -> str:
+    Image.MAX_IMAGE_PIXELS = None
+
     try:
         with Image.open(file_name) as img:
             mode = img.mode
@@ -61,7 +61,7 @@ def write_file_txt(name: str, list_text: str):
         print(list_text, file=file)
 
 
-def calculation(width, length, material: str):
+def calculation(width, length, material: str) -> float:
     price_material = data.price_material.get(material)
     return round(width * length * price_material, 2)
 
@@ -82,13 +82,25 @@ def select_material() -> str:
     # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
     return pyip.inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
+def number_of_pieces(file_name_in_list: str) -> int:
+    '''
+    ищем количество в имени файла указываеться после шт
+    '''
+    file_name_in_list = file_name_in_list.lower()
+    if 'шт' in file_name_in_list:
+        quantity_in_name_file = file_name_in_list[:file_name_in_list.find('шт')]
+        num = ""
+        for i in range(file_name_in_list.find('шт') - 1, -1, -1):
+            # print(file_name[i])
+            if file_name_in_list[i].isdigit():
+                num += str(file_name_in_list[i])
+                num = num[::-1]
+        return num
 
 if __name__ == "__main__":
     path_dir = input("Введите путь к каталогу: ")
     lst_files = list_file(path_dir)
     # assert len(list_file) != 0, 'Список list_file не должен быть пустым'
-
-    # material = input("Материал Баннер (banner_440) или Пленка (film)?: ")
     material = select_material()
     lst_tif = only_tif(lst_files)
     lst_all = []
@@ -97,30 +109,24 @@ if __name__ == "__main__":
 
         for i in range(len(lst_tif)):
             w_l_dpi = check_tiff(lst_tif[i])
-            # lst_all.append([lst_tif[i], check_tiff(lst_tif[i], 'banner'), color_mode(lst_tif[i]),
-            #                 size_file(lst_tif[i]), calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, 'banner')])
-            # print(lst_all)
-            print(f'File # {i + 1}: {lst_tif[i]}')
-
-            print(f'Ширина: {w_l_dpi[0]}см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi')
-            print(f'Цветовая модель: {color_mode(lst_tif[i])}')
-            print(f'Размер: {size_file(lst_tif[i])} Мб')
-            print("-" * 40)
-
-            print(f'Стоимость:{calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)} руб. ')
-            itog = itog + calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
-            file.write(f'File # {i + 1}: {lst_tif[i]}\n')
-            file.write(f'Ширина: {w_l_dpi[0]} см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi\n')
-            file.write(f'Цветовая модель: {color_mode(lst_tif[i])}\n')
-            file.write(f'Размер: {size_file(lst_tif[i])} Мб\n')
+            file_name = f'File # {i + 1}: {lst_tif[i]}'
+            quantity = int(number_of_pieces(lst_tif[i]))
+            quantity_print = f'Количество: {quantity} шт.'
+            length_width = f'Ширина: {w_l_dpi[0]}см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
+            color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
+            size = f'Размер: {size_file(lst_tif[i])} Мб'
+            price_one = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
+            price = price_one * quantity
+            price_print = f'Стоимость:{price_one * quantity} руб.\n '
+            itog = itog + price
+            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
-            file.write(f'Стоимость:{calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)} руб. \n\n')
         file.write(f'Итого: {round(itog, 2)} руб.')
     print(f'Итого: {round(itog, 2)} руб.')
 
     arh(lst_tif, material)
 
-    path_save = f'upload/Nokleyka/{date.today()}'
+    path_save = f'upload/Стиль Н/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
