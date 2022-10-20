@@ -82,6 +82,7 @@ def select_material() -> str:
     # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
     return pyip.inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
+
 def number_of_pieces(file_name_in_list: str) -> int:
     '''
     ищем количество в имени файла указываеться после шт
@@ -97,18 +98,27 @@ def number_of_pieces(file_name_in_list: str) -> int:
                 num = num[::-1]
         return num
 
+
 if __name__ == "__main__":
-    path_dir = input("Введите путь к каталогу: ")
+    path_dir = str(input("Введите путь к каталогу: "))
+    assert type(path_dir) == str
+    assert type(list_file(path_dir)) == list
     lst_files = list_file(path_dir)
-    # assert len(list_file) != 0, 'Список list_file не должен быть пустым'
+    assert type(lst_files) == list, "Список list_file  должен быть list (списком)"
     material = select_material()
+    assert data.price_material.get('material', False) == False, 'Материал берется из словаря data.price_material.'
+
     lst_tif = only_tif(lst_files)
+    assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
+
     lst_all = []
     itog = 0
-    with open(f' {material}_for_print_{date.today()}.txt', "w") as file:
+    text_file_name = f'{material}_for_print_{date.today()}.txt'
+    with open(text_file_name, "w") as file:
 
         for i in range(len(lst_tif)):
             w_l_dpi = check_tiff(lst_tif[i])
+            assert type(check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
             file_name = f'File # {i + 1}: {lst_tif[i]}'
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
@@ -124,7 +134,7 @@ if __name__ == "__main__":
         file.write(f'Итого: {round(itog, 2)} руб.')
     print(f'Итого: {round(itog, 2)} руб.')
 
-    arh(lst_tif, material) # aрхивация
+    arh(lst_tif, material)  # aрхивация
 
     path_save = f'upload/Стиль Н/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
@@ -133,3 +143,4 @@ if __name__ == "__main__":
 
     yandex_disk.create_folder(path_save)
     yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
+    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}')

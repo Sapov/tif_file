@@ -50,18 +50,13 @@ def backup(savepath, loadpath):
                         '{0}/{1}{2}/{3}'.format(savepath, date_folder, address.replace(loadpath, "").replace("\\", "/"),
                                                 file))
 
+def get_download_link(path: str) -> str:
+    """получаем сссылку к папке на скачивание"""
+    requests.get(f'{URL}/download?path={path}', headers=headers)
+    print(requests.get(f'{URL}/download?path={path}', headers=headers))
+    r = requests.get(f'{URL}/download?path={path}&fields=list', headers=headers)
+    di = r.json()
+    return di['href']
 
-# if __name__ == '__main__':
-#     #backup('Backup', r'C:\Files\backup')
-#     backup('Backup', os.getcwd())
-
-# def get_download_link(path: str) -> str:
-#     """получаем сссылку к папке на скачивание"""
-#     requests.get(f'{URL}/download?path={path}', headers=headers)
-#     print(requests.get(f'{URL}/download?path={path}', headers=headers))
-#     r = requests.get(f'{URL}/download?path={path}&fields=list', headers=headers)
-#     di = r.json()
-#     return di['href']
-#
 #
 # get_download_link('upload/Стиль Н/2022-10-13')
