@@ -96,20 +96,17 @@ def number_of_pieces(file_name_in_list: str) -> int:
             if file_name_in_list[i].isdigit():
                 num += str(file_name_in_list[i])
                 num = num[::-1]
-        return num
+        return int(num)
+    else:
+        return 1
 
 
 if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
-    assert type(path_dir) == str
-    assert type(list_file(path_dir)) == list
-    lst_files = list_file(path_dir)
-    assert type(lst_files) == list, "Список list_file  должен быть list (списком)"
-    material = select_material()
-    assert data.price_material.get('material', False) == False, 'Материал берется из словаря data.price_material.'
 
+    lst_files = list_file(path_dir)
+    material = select_material()
     lst_tif = only_tif(lst_files)
-    assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
 
     lst_all = []
     itog = 0
@@ -144,3 +141,18 @@ if __name__ == "__main__":
     yandex_disk.create_folder(path_save)
     yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
     yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}')
+
+    assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
+    assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
+    assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
+
+    assert data.price_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
+    assert type(path_dir) == str, 'Должна быть строка'
+    assert type(list_file(path_dir)) == list
+    assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
+    assert type(lst_files) == list, "Список list_file  должен быть list (списком)"
+
+
+
+
+
