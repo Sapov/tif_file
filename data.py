@@ -3,6 +3,7 @@ resolution = {'banner_440': 72, 'film': 150}
 price_material = {'banner_440': 200, 'film': 190, "film_int": 280}  # на 28-09-2022
 
 propertis_material = {'banner_440': [72, 200, 'баннер ламинированный 440 грамма']}
+organisations = ['Стиль Н', 'Наклейка']
 # где
 # banner440 -имя переменной
 # 72 - разрешение печати

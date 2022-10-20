@@ -83,6 +83,12 @@ def select_material() -> str:
     return pyip.inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
 
+def select_oraganization():
+     '''
+     Выбор организации для отправки файлов
+          '''
+     return pyip.inputMenu([i for i in data.organisations], prompt='Выбирите организацию кужа отправить файлы: \n', numbered=True)
+
 def number_of_pieces(file_name_in_list: str) -> int:
     '''
     ищем количество в имени файла указываеться после шт
@@ -132,8 +138,8 @@ if __name__ == "__main__":
     print(f'Итого: {round(itog, 2)} руб.')
 
     arh(lst_tif, material)  # aрхивация
-
-    path_save = f'upload/Стиль Н/{date.today()}'
+    organizations=select_oraganization()
+    path_save = f'upload/{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
