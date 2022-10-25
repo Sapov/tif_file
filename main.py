@@ -1,12 +1,13 @@
 from datetime import date
 import PIL
 from PIL import Image
-import os, zipfile
+import os
+import zipfile
 import data
 from tqdm import tqdm
 import yandex_disk
-import pyinputplus as pyip
-
+from pyinputplus import inputMenu
+import send_mail
 
 def list_file(path_dir: str) -> list[str]:
     os.chdir(path_dir)  # переходим в указанный катлог
@@ -80,14 +81,16 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
 def select_material() -> str:
     '''Функция выбора материала для печати'''
     # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
-    return pyip.inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
+    return inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
 
 def select_oraganization():
-     '''
-     Выбор организации для отправки файлов
-          '''
-     return pyip.inputMenu([i for i in data.organisations], prompt='Выбирите организацию кужа отправить файлы: \n', numbered=True)
+    '''
+    Выбор организации для отправки файлов
+         '''
+    return inputMenu([i for i in data.organisations], prompt='Выбирите организацию куда отправить файлы: \n',
+                     numbered=True)
+
 
 def number_of_pieces(file_name_in_list: str) -> int:
     '''
@@ -138,15 +141,19 @@ if __name__ == "__main__":
     print(f'Итого: {round(itog, 2)} руб.')
 
     arh(lst_tif, material)  # aрхивация
-    organizations=select_oraganization()
+    organizations = select_oraganization()
     path_save = f'upload/{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
-    yandex_disk.create_folder(path_save)
-    yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
-    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}')
+    # yandex_disk.create_folder(path_save)
+    # yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
+    # yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}')
+
+    with open(text_file_name) as f:
+        stt = f.read()
+        send_mail.send_mail(stt)
 
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
@@ -157,8 +164,3 @@ if __name__ == "__main__":
     assert type(list_file(path_dir)) == list
     assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
     assert type(lst_files) == list, "Список list_file  должен быть list (списком)"
-
-
-
-
-
