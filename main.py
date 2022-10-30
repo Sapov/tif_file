@@ -167,6 +167,7 @@ if __name__ == "__main__":
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
 
+
     assert data.price_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
     assert type(path_dir) == str, 'Должна быть строка'
     assert type(list_file(path_dir)) == list

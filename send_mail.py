@@ -16,7 +16,6 @@ def send_mail(message: str, subject: str):
     msg['Subject'] = Header(subject, 'utf-8')
     msg['From'] = email
     msg['To'] = dest_email
-
     # server.set_debuglevel(1)  # Необязательно; так будут отображаться данные с сервера в консоли
     server.sendmail(email, dest_email, msg.as_string())
     server.quit()

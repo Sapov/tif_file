@@ -20,8 +20,6 @@ def delete_folder(path: str):
 
 
 # delete_folder(f'upload/Стиль Н/{date.today()}')
-
-
 def upload_file(loadfile, savefile, replace=False):
     """Загрузка файла.
     savefile: Путь к файлу на Диске
@@ -49,6 +47,7 @@ def backup(savepath, loadpath):
             upload_file('{0}\{1}'.format(address, file), \
                         '{0}/{1}{2}/{3}'.format(savepath, date_folder, address.replace(loadpath, "").replace("\\", "/"),
                                                 file))
+
 
 def get_download_link(path: str) -> str:
     """получаем сссылку к папке на скачивание"""
