@@ -4,18 +4,16 @@ from email.header import Header
 from ya_token import yandex_login
 
 
-def send_mail(message: str):
+def send_mail(message: str, subject: str):
     email = 'rpk.reds@yandex.ru'  # ОТ КОГО
     password = yandex_login
     server = smtplib.SMTP('smtp.yandex.ru', 587)
     server.ehlo()
     server.starttls()
     server.login(email, password)
-    subject = "Печать на баннере"
     dest_email = 'rpk.reds@gmail.com'
     msg = MIMEText(message, 'plain', 'utf-8')
-    msg['Subject'] = Header('Тема письма это печать баннера', 'utf-8')
-    # login = email
+    msg['Subject'] = Header(subject, 'utf-8')
     msg['From'] = email
     msg['To'] = dest_email
 

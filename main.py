@@ -9,6 +9,7 @@ import yandex_disk
 from pyinputplus import inputMenu
 import send_mail
 
+
 def list_file(path_dir: str) -> list[str]:
     os.chdir(path_dir)  # переходим в указанный катлог
     return os.listdir()  # читаем имена файлов в список
@@ -58,8 +59,9 @@ def size_file(name_file: str) -> float:
 
 
 def write_file_txt(name: str, list_text: str):
-    with open(f' {name}_{date.today()}.txt', "w") as file:
-        print(list_text, file=file)
+    with open(f'{name}_{date.today()}.txt', "w") as file:
+        # print(list_text, file=file)
+        file.write(list_text)
 
 
 def calculation(width, length, material: str) -> float:
@@ -110,18 +112,10 @@ def number_of_pieces(file_name_in_list: str) -> int:
         return 1
 
 
-if __name__ == "__main__":
-    path_dir = str(input("Введите путь к каталогу: "))
-
-    lst_files = list_file(path_dir)
-    material = select_material()
-    lst_tif = only_tif(lst_files)
-
-    lst_all = []
+# запись в текстовый файл
+def rec_to_file(text_file_name: str):
     itog = 0
-    text_file_name = f'{material}_for_print_{date.today()}.txt'
     with open(text_file_name, "w") as file:
-
         for i in range(len(lst_tif)):
             w_l_dpi = check_tiff(lst_tif[i])
             assert type(check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
@@ -137,8 +131,21 @@ if __name__ == "__main__":
             itog = itog + price
             file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
-        file.write(f'Итого: {round(itog, 2)} руб.')
-    print(f'Итого: {round(itog, 2)} руб.')
+
+        file.write(f'Итого: {round(itog, 2)} руб.\n')
+        print(f'Итого: {round(itog, 2)} руб.')
+
+
+if __name__ == "__main__":
+    path_dir = str(input("Введите путь к каталогу: "))
+
+    lst_files = list_file(path_dir)
+    material = select_material()
+    lst_tif = only_tif(lst_files)
+
+    text_file_name = f'{material}_for_print_{date.today()}.txt'
+
+    rec_to_file(text_file_name)
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
@@ -147,13 +154,14 @@ if __name__ == "__main__":
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
-    # yandex_disk.create_folder(path_save)
-    # yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
-    # yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}')
+    yandex_disk.create_folder(path_save)
+    yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
+    link = yandex_disk.get_download_link(path_save)
+    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}')
 
-    with open(text_file_name) as f:
-        stt = f.read()
-        send_mail.send_mail(stt)
+    with open(text_file_name) as file:
+        new_str = file.read()
+        send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
 
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"

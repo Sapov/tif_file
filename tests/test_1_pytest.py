@@ -14,4 +14,4 @@ def test_list_file():
 # if __name__ == '__main__':
     pytest.main()
     test_list_file()
-    test_number_of_pieces()
+    # test_number_of_pieces()
