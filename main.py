@@ -21,7 +21,7 @@ def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
 
 def check_tiff(file_name: str):
     try:
-        Image.MAX_IMAGE_PIXELS = 1000000000
+        Image.MAX_IMAGE_PIXELS = None
         with Image.open(file_name) as img:
             s = img.size
             resolution = round(img.info['dpi'][0], 0)
