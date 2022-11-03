@@ -64,8 +64,12 @@ def write_file_txt(name: str, list_text: str):
         file.write(list_text)
 
 
+# def calculation(width, length, material: str) -> float:
+#     price_material = data.price_material.get(material)
+#     return round(width * length * price_material, 2)
+
 def calculation(width, length, material: str) -> float:
-    price_material = data.price_material.get(material)
+    price_material = data.propertis_material.get(material)[0]
     return round(width * length * price_material, 2)
 
 
@@ -80,10 +84,13 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
             new_arh.close()
 
 
+# def select_material() -> str:
+#     '''Функция выбора материала для печати'''
+#     # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
+#     return inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
 def select_material() -> str:
     '''Функция выбора материала для печати'''
-    # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
-    return inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
+    return inputMenu([i for i in data.propertis_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
 
 def select_oraganization():
