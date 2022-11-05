@@ -1,6 +1,6 @@
 import PIL
 from PIL import Image
-
+import data
 
 def resize_image(file_name: str, new_dpi: int):
     '''
@@ -19,15 +19,16 @@ def resize_image(file_name: str, new_dpi: int):
             width_new_px = round(float(persent_resize * width_px), 0)
             length_new_px = round((width_new_px / width_px) * length_px, 0)
             img = img.resize((int(width_new_px), int(length_new_px)))
-            img.save(file_name, dpi=(new_dpi, new_dpi))
-        print(f'Изменил размер файла {file_name} c {resolution} dpi на {new_dpi} dpi')
+            # img.save(f'new{file_name}', dpi=(new_dpi, new_dpi))
+            img.save(f'{file_name}', dpi=(new_dpi, new_dpi))
+        print(f'Изменил размер файла {file_name} c {resolution} dpi на {new_dpi} dpi\n')
 
     except PIL.UnidentifiedImageError:
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
 Решение: Photoshop / слои / выполнить сведение''')
 
 
-def check_image_tiff(file_name: str):
+def check_tiff(file_name: str):
     try:
         Image.MAX_IMAGE_PIXELS = None
         with Image.open(file_name) as img:
@@ -40,11 +41,22 @@ def check_image_tiff(file_name: str):
 
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
 Решение: Photoshop / слои / выполнить сведение''')
-    print(f'width: {width} cm, length:{length}cm resolution: {resolution}dpi')
 
     return width, length, resolution
 
 
-# def chack_resolution(width: float, length: float,  resolution: int)
-#     if resolution
 
+def check_resolution(lst_tif, material):
+    '''
+    Проверяем разрешения и уменьшаем в соответстввии со стандартом
+    :param lst_tif:
+    :param material:
+    :return:
+    '''
+    for i in lst_tif:
+        if check_tiff(i)[2] > data.propertis_material.get(material)[1]:
+            print("Разрешение больше Уменьшаем")
+            resize_image(i, data.propertis_material.get(material)[1])
+        else:
+            print("Меньше Увеличиваем?? или оставляем")
+        # print(i)
