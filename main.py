@@ -5,9 +5,12 @@ import os
 import zipfile
 import data
 from tqdm import tqdm
+
+import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
 import send_mail
+from img_file.img_tif import check_resolution
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -18,20 +21,6 @@ def list_file(path_dir: str) -> list[str]:
 def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
     return [i for i in lst if i.endswith('.tif')]
 
-
-def check_tiff(file_name: str):
-    try:
-        Image.MAX_IMAGE_PIXELS = 1000000000
-        with Image.open(file_name) as img:
-            s = img.size
-            resolution = round(img.info['dpi'][0], 0)
-            width = round(2.54 * s[0] / resolution, 0)
-            length = round(2.54 * s[1] / resolution, 0)
-
-    except PIL.UnidentifiedImageError:
-        return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
-Решение: Photoshop / слои / выполнить сведение''')
-    return width, length, resolution
 
 
 def color_mode(file_name: str) -> str:
@@ -64,8 +53,12 @@ def write_file_txt(name: str, list_text: str):
         file.write(list_text)
 
 
+# def calculation(width, length, material: str) -> float:
+#     price_material = data.price_material.get(material)
+#     return round(width * length * price_material, 2)
+
 def calculation(width, length, material: str) -> float:
-    price_material = data.price_material.get(material)
+    price_material = data.propertis_material.get(material)[0]
     return round(width * length * price_material, 2)
 
 
@@ -80,10 +73,13 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
             new_arh.close()
 
 
+# def select_material() -> str:
+#     '''Функция выбора материала для печати'''
+#     # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
+#     return inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
 def select_material() -> str:
     '''Функция выбора материала для печати'''
-    # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
-    return inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
+    return inputMenu([i for i in data.propertis_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
 
 def select_oraganization():
@@ -117,8 +113,8 @@ def rec_to_file(text_file_name: str):
     itog = 0
     with open(text_file_name, "w") as file:
         for i in range(len(lst_tif)):
-            w_l_dpi = check_tiff(lst_tif[i])
-            assert type(check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
+            w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])
+            assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
             file_name = f'File # {i + 1}: {lst_tif[i]}'
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
@@ -135,16 +131,16 @@ def rec_to_file(text_file_name: str):
         file.write(f'Итого: {round(itog, 2)} руб.\n')
         print(f'Итого: {round(itog, 2)} руб.')
 
-
 if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
-
+    # path_dir = 'C:/Users/Sasha/Downloads/замена баннеры311022'
     lst_files = list_file(path_dir)
     material = select_material()
     lst_tif = only_tif(lst_files)
 
-    text_file_name = f'{material}_for_print_{date.today()}.txt'
+    check_resolution(lst_tif, material) # Меняем разрешение на стандарт
 
+    text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
 
     arh(lst_tif, material)  # aрхивация
@@ -154,10 +150,11 @@ if __name__ == "__main__":
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
+    def upload_all_in_yadisk():
     yandex_disk.create_folder(path_save)
     yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
     link = yandex_disk.get_download_link(path_save)
-    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}')
+    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}') # send text file from disk
 
     with open(text_file_name) as file:
         new_str = file.read()
@@ -168,7 +165,7 @@ if __name__ == "__main__":
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
 
 
-    assert data.price_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
+    assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
     assert type(path_dir) == str, 'Должна быть строка'
     assert type(list_file(path_dir)) == list
     assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
