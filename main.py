@@ -118,12 +118,12 @@ def rec_to_file(text_file_name: str):
             file_name = f'File # {i + 1}: {lst_tif[i]}'
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
-            length_width = f'Ширина: {w_l_dpi[0]}см\nДлина {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
+            length_width = f'Ширина: {w_l_dpi[0]}см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
             color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
             size = f'Размер: {size_file(lst_tif[i])} Мб'
             price_one = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
             price = price_one * quantity
-            price_print = f'Стоимость:{price_one * quantity} руб.\n '
+            price_print = f'Стоимость: {price_one * quantity} руб.\n '
             itog = itog + price
             file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
-    def upload_all_in_yadisk():
+    # def upload_all_in_yadisk():
     yandex_disk.create_folder(path_save)
     yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
     link = yandex_disk.get_download_link(path_save)
