@@ -22,7 +22,6 @@ def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
     return [i for i in lst if i.endswith('.tif')]
 
 
-
 def color_mode(file_name: str) -> str:
     Image.MAX_IMAGE_PIXELS = None
 
@@ -59,6 +58,11 @@ def write_file_txt(name: str, list_text: str):
 
 def calculation(width, length, material: str) -> float:
     price_material = data.propertis_material.get(material)[0]
+    return round(width * length * price_material, 2)
+
+
+def calculation_for_client(width, length, material: str) -> float:
+    price_material = data.propertis_material.get(material)[3]
     return round(width * length * price_material, 2)
 
 
@@ -129,7 +133,31 @@ def rec_to_file(text_file_name: str):
             file.write("-" * 40 + "\n")
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
-        print(f'Итого: {round(itog, 2)} руб.')
+        print(f'Итого стоимость печати: {round(itog, 2)} руб.')
+
+
+def file_sale(file_s: str):
+    itog = 0
+    with open(file_s, "w") as file:
+        for i in range(len(lst_tif)):
+            w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])
+            assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
+            file_name = f'File # {i + 1}: {lst_tif[i]}'
+            quantity = int(number_of_pieces(lst_tif[i]))
+            quantity_print = f'Количество: {quantity} шт.'
+            length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
+            color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
+            size = f'Размер: {size_file(lst_tif[i])} Мб'
+            price_one = calculation_for_client(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # считаем стоимость для заказчика
+            price = price_one * quantity
+            price_print = f'Стоимость: {price_one * quantity} руб.\n '
+            itog = itog + price
+            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{color_model}\n{size}\n{price_print}\n')
+            file.write("-" * 40 + "\n")
+
+        file.write(f'Итого: {round(itog, 2)} руб.\n')
+        print(f'Итого продажа: {round(itog, 2)} руб.')
+
 
 if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
@@ -138,10 +166,12 @@ if __name__ == "__main__":
     material = select_material()
     lst_tif = only_tif(lst_files)
 
-    check_resolution(lst_tif, material) # Меняем разрешение на стандарт
+    check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
+    file_s = f'{material}_for_sale_{date.today()}.txt'
+    file_sale(file_s)
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
@@ -154,7 +184,8 @@ if __name__ == "__main__":
     yandex_disk.create_folder(path_save)
     yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
     link = yandex_disk.get_download_link(path_save)
-    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}', f'{path_save}/{text_file_name}') # send text file from disk
+    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}',
+                            f'{path_save}/{text_file_name}')  # send text file from disk
 
     with open(text_file_name) as file:
         new_str = file.read()
@@ -163,7 +194,6 @@ if __name__ == "__main__":
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
-
 
     assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
     assert type(path_dir) == str, 'Должна быть строка'
