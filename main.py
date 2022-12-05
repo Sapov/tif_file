@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 import PIL
 from PIL import Image
 import os
@@ -118,7 +118,7 @@ def rec_to_file(text_file_name: str):
             file_name = f'File # {i + 1}: {lst_tif[i]}'
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
-            length_width = f'Ширина: {w_l_dpi[0]}см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
+            length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
             color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
             size = f'Размер: {size_file(lst_tif[i])} Мб'
             price_one = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
