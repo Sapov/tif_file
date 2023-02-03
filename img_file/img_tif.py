@@ -29,6 +29,11 @@ def resize_image(file_name: str, new_dpi: int):
 
 
 def check_tiff(file_name: str):
+    '''
+    :param file_name: принимает имя файла
+    :return: возращает кортеж (длина ширина (см) и разрешение файла (dpi)
+    '''
+
     try:
         Image.MAX_IMAGE_PIXELS = None
         with Image.open(file_name) as img:
@@ -60,3 +65,5 @@ def check_resolution(lst_tif, material):
         else:
             print("Меньше Увеличиваем?? или оставляем")
         # print(i)
+
+
