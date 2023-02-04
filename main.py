@@ -126,10 +126,13 @@ def rec_to_file(text_file_name: str):
             color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
             size = f'Размер: {size_file(lst_tif[i])} Мб'
             price_one = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
+            square_unit = (w_l_dpi[0] * w_l_dpi[
+                1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
+            square = f'Площадь печати {round(square_unit * quantity,2)} м2'  # вся площадь печати
             price = price_one * quantity
             price_print = f'Стоимость: {price_one * quantity} руб.\n '
             itog = itog + price
-            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{color_model}\n{size}\n{price_print}\n')
+            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
@@ -146,13 +149,15 @@ def file_sale(file_s: str):
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
             length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
+            square_unit = (w_l_dpi[0] * w_l_dpi[1]) / 10000 # площадь печати одной штуки (см приводим к метрам  / 10 000
+            square = f'Площадь печати {round(square_unit * quantity,2)} м2' # вся площадь печати
             color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
             size = f'Размер: {size_file(lst_tif[i])} Мб'
             price_one = calculation_for_client(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # считаем стоимость для заказчика
             price = price_one * quantity
             price_print = f'Стоимость: {price_one * quantity} руб.\n '
             itog = itog + price
-            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{color_model}\n{size}\n{price_print}\n')
+            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
@@ -182,11 +187,11 @@ if __name__ == "__main__":
     print(f'{path_save}/{zip_name}')
 
     # def upload_all_in_yadisk():
-    yandex_disk.create_folder(path_save)
-    yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
-    link = yandex_disk.get_download_link(path_save)
-    yandex_disk.upload_file(rf'{path_dir}\{text_file_name}',
-                            f'{path_save}/{text_file_name}')  # send text file from disk
+    # yandex_disk.create_folder(path_save)
+    # yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
+    # link = yandex_disk.get_download_link(path_save)
+    # yandex_disk.upload_file(rf'{path_dir}\{text_file_name}',
+    #                         f'{path_save}/{text_file_name}')  # send text file from disk
 
     with open(text_file_name) as file:
         new_str = file.read()
