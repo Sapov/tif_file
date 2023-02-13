@@ -202,7 +202,7 @@ if __name__ == "__main__":
     with open(file_s) as file:
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
-
+#
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
