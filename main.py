@@ -5,7 +5,7 @@ import os
 import zipfile
 import data
 from tqdm import tqdm
-
+from pathlib import Path
 import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
@@ -128,11 +128,12 @@ def rec_to_file(text_file_name: str):
             price_one = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
             square_unit = (w_l_dpi[0] * w_l_dpi[
                 1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
-            square = f'Площадь печати {round(square_unit * quantity,2)} м2'  # вся площадь печати
+            square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
             price = price_one * quantity
             price_print = f'Стоимость: {price_one * quantity} руб.\n '
             itog = itog + price
-            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
+            file.write(
+                f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
@@ -149,15 +150,18 @@ def file_sale(file_s: str):
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
             length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
-            square_unit = (w_l_dpi[0] * w_l_dpi[1]) / 10000 # площадь печати одной штуки (см приводим к метрам  / 10 000
-            square = f'Площадь печати {round(square_unit * quantity,2)} м2' # вся площадь печати
+            square_unit = (w_l_dpi[0] * w_l_dpi[
+                1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
+            square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
             color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
             size = f'Размер: {size_file(lst_tif[i])} Мб'
-            price_one = calculation_for_client(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # считаем стоимость для заказчика
+            price_one = calculation_for_client(w_l_dpi[0] / 100, w_l_dpi[1] / 100,
+                                               material)  # считаем стоимость для заказчика
             price = price_one * quantity
             price_print = f'Стоимость: {price_one * quantity} руб.\n '
             itog = itog + price
-            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
+            file.write(
+                f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
@@ -167,7 +171,6 @@ def file_sale(file_s: str):
 if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
     client = input('Введите имя клиента: ')
-    # path_dir = 'C:/Users/Sasha/Downloads/замена баннеры311022'
     lst_files = list_file(path_dir)
     material = select_material()
     lst_tif = only_tif(lst_files)
@@ -176,7 +179,7 @@ if __name__ == "__main__":
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
-    file_s = f'{client}_{material}_for_sale_{date.today()}.txt'
+    file_s = f'{client}_{material}_for_sale_{date.today()}.txtsale'
     file_sale(file_s)
 
     arh(lst_tif, material)  # aрхивация
@@ -186,14 +189,17 @@ if __name__ == "__main__":
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
+    yandex_disk.create_folder(path_save)  # Создаем папку на yadisk
+    yandex_disk.add_yadisk_locate(path_save)  # copy files from yadisk
+    link = yandex_disk.add_link_from_folder_yadisk(path_save) # Опубликовал папку получил линк
+
     # def upload_all_in_yadisk():
     # yandex_disk.create_folder(path_save)
     # yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
     # link = yandex_disk.get_download_link(path_save)
     # yandex_disk.upload_file(rf'{path_dir}\{text_file_name}',
     #                         f'{path_save}/{text_file_name}')  # send text file from disk
-
-    with open(text_file_name) as file:
+    with open(file_s) as file:
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
 

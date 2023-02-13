@@ -59,3 +59,36 @@
 #
 # #
 # # get_download_link('upload/Стиль Н/2022-11-05')
+import os
+import shutil
+import subprocess
+from pathlib import Path
+
+local_path_yadisk = '/home/sasha/Yandex.Disk/'
+
+
+def create_folder(path):
+    os.mkdir(f'/home/sasha/Yandex.Disk/{path}')
+
+
+def add_yadisk_locate(path):
+    """закидываем файлы на yadisk локально на ubuntu"""
+    Path.cwd()  # Идем в текущий каталог
+    print(f' Catalog CANGE {Path.cwd()}')
+    lst_files = os.listdir()  # read name files from folder
+    print(lst_files)
+    for i in lst_files:
+        if i.endswith("txt") or i.endswith("zip"):
+            print(f'Copy {i} files')
+            shutil.move(i, f'/home/sasha/Yandex.Disk/{path}')
+
+
+def add_link_from_folder_yadisk(path):
+    print(f'Опубликовал папку {path}')
+    # ya_link = os.system(f"yandex-disk publish {path}")
+    ya_link = subprocess.check_output(["yandex-disk", "publish", path])
+
+
+    print(f' Получил {ya_link}')
+    print('Type: ', type(ya_link))
+    return str(ya_link)
