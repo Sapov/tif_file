@@ -88,7 +88,8 @@ def add_link_from_folder_yadisk(path):
     # ya_link = os.system(f"yandex-disk publish {path}")
     ya_link = subprocess.check_output(["yandex-disk", "publish", path])
 
-
     print(f' Получил {ya_link}')
     print('Type: ', type(ya_link))
+    ya_link = ya_link.lstrip("b'").rstrip("\n'")
+
     return str(ya_link)
