@@ -74,7 +74,7 @@ def add_border(lst_tif:list):
             img_border = ImageOps.expand(img, border=1, fill='yellow')  # 1 px color -gray
         #
             img_border.save(i)
-            print(f' поменяли бордер у файла: {i}')
+            print(f' Сделали обводку у файла: {i}')
 
 
 

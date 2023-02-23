@@ -168,10 +168,6 @@ def file_sale(file_s: str):
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
-def rename_files(lst_tif: list):
-    for i in lst_tif:
-        if i.startswith('border_'):
-            print(f'выводим файлы c BORDER{i}')
 
 if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
