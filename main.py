@@ -10,7 +10,7 @@ import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
 import send_mail
-from img_file.img_tif import check_resolution
+from img_file.img_tif import check_resolution, add_border
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -19,7 +19,7 @@ def list_file(path_dir: str) -> list[str]:
 
 
 def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
-    return [i for i in lst if i.endswith('.tif')]
+    return [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
 
 
 def color_mode(file_name: str) -> str:
@@ -128,11 +128,12 @@ def rec_to_file(text_file_name: str):
             price_one = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
             square_unit = (w_l_dpi[0] * w_l_dpi[
                 1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
-            square = f'Площадь печати {round(square_unit * quantity,2)} м2'  # вся площадь печати
+            square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
             price = price_one * quantity
             price_print = f'Стоимость: {price_one * quantity} руб.\n '
             itog = itog + price
-            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
+            file.write(
+                f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
@@ -149,30 +150,40 @@ def file_sale(file_s: str):
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
             length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
-            square_unit = (w_l_dpi[0] * w_l_dpi[1]) / 10000 # площадь печати одной штуки (см приводим к метрам  / 10 000
-            square = f'Площадь печати {round(square_unit * quantity,2)} м2' # вся площадь печати
+            square_unit = (w_l_dpi[0] * w_l_dpi[
+                1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
+            square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
             color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
             size = f'Размер: {size_file(lst_tif[i])} Мб'
-            price_one = calculation_for_client(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # считаем стоимость для заказчика
+            price_one = calculation_for_client(w_l_dpi[0] / 100, w_l_dpi[1] / 100,
+                                               material)  # считаем стоимость для заказчика
             price = price_one * quantity
             price_print = f'Стоимость: {price_one * quantity} руб.\n '
             itog = itog + price
-            file.write(f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
+            file.write(
+                f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
             file.write("-" * 40 + "\n")
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
+def rename_files(lst_tif: list):
+    for i in lst_tif:
+        if i.startswith('border_'):
+            print(f'выводим файлы c BORDER{i}')
+
 if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
-    client = input('Введите имя клиента: ')
-    # path_dir = 'C:/Users/Sasha/Downloads/замена баннеры311022'
+    # client = input('Введите имя клиента: ')
+    client = 1 ##################
     lst_files = list_file(path_dir)
     material = select_material()
     lst_tif = only_tif(lst_files)
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
+    add_border(lst_tif)  # Делаем бордер по фотографиям
+    print(lst_tif)
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
