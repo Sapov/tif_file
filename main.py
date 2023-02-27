@@ -5,7 +5,7 @@ import os
 import zipfile
 import data
 from tqdm import tqdm
-
+from pathlib import Path
 import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
@@ -190,20 +190,26 @@ if __name__ == "__main__":
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
-    file_s = f'{client}_{material}_for_sale_{date.today()}.txt'
+    file_s = f'{client}_{material}_for_sale_{date.today()}.txtsale'
     file_sale(file_s)
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
-    path_save = f'upload/{organizations}/{date.today()}'
+    path_save = f'upload/{organizations}/{date.today()}/{client}'
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
+
+    yandex_disk.create_folder(path_save)  # Создаем папку на yadisk
+    yandex_disk.add_yadisk_locate(path_save)  # copy files from yadisk
+    link = yandex_disk.add_link_from_folder_yadisk(path_save) # Опубликовал папку получил линк
+
+
     with open(text_file_name) as file:
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
-
+#
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
