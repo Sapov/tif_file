@@ -1,10 +1,11 @@
 import PIL
-from PIL import Image
+from PIL import Image, ImageOps
 import data
+
 
 def resize_image(file_name: str, new_dpi: int):
     '''
-    :param file_name: имя фала для ресайза
+    :param file_name: имя файла для ресайза
     :param new_dpi: новое разрешение ресайза
     :return:
     '''
@@ -50,10 +51,18 @@ def check_tiff(file_name: str):
     return width, length, resolution
 
 
+def perimetr(width, length):
+    ''' Вычисляем прериметр изображения'''
+    return (width + length)*2
+
+
+
+
+
 
 def check_resolution(lst_tif, material):
     '''
-    Проверяем разрешения и уменьшаем в соответстввии со стандартом
+    Проверяем разрешения и уменьшаем в соответствии со стандартом
     :param lst_tif:
     :param material:
     :return:
@@ -64,6 +73,17 @@ def check_resolution(lst_tif, material):
             resize_image(i, data.propertis_material.get(material)[1])
         else:
             print("Меньше Увеличиваем?? или оставляем")
-        # print(i)
+
+
+def add_border(lst_tif:list):
+    '''Добавляем контур к файлу для понимания границ печати'''
+    for i in lst_tif:
+        Image.MAX_IMAGE_PIXELS = None
+        with Image.open(i) as img:
+            img_border = ImageOps.expand(img, border=1, fill='yellow')  # 1 px color -gray
+        #
+            img_border.save(i)
+            print(f' Сделали обводку у файла: {i}')
+
 
 

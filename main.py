@@ -10,7 +10,7 @@ import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
 import send_mail
-from img_file.img_tif import check_resolution
+from img_file.img_tif import check_resolution, add_border
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -19,7 +19,7 @@ def list_file(path_dir: str) -> list[str]:
 
 
 def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
-    return [i for i in lst if i.endswith('.tif')]
+    return [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
 
 
 def color_mode(file_name: str) -> str:
@@ -86,6 +86,10 @@ def select_material() -> str:
     return inputMenu([i for i in data.propertis_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
 
+
+
+
+
 def select_oraganization():
     '''
     Выбор организации для отправки файлов
@@ -119,6 +123,8 @@ def rec_to_file(text_file_name: str):
         for i in range(len(lst_tif)):
             w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])
             assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
+            P = img_file.img_tif.perimetr(w_l_dpi[0], w_l_dpi[1])  # периметр файла
+
             file_name = f'File # {i + 1}: {lst_tif[i]}'
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
@@ -172,10 +178,15 @@ if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
     client = input('Введите имя клиента: ')
     lst_files = list_file(path_dir)
-    material = select_material()
+    material = select_material()  # выбираем материал
+    '''если выбран материал Баннер (любой), то предлагаем проклейку или установку люверсов'''
+    # if 'Баннер' in material:
+    #     print('Финишная обработка')
+
     lst_tif = only_tif(lst_files)
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
+    add_border(lst_tif)  # Делаем бордер по контуру всего файла
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
@@ -189,17 +200,13 @@ if __name__ == "__main__":
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
+
     yandex_disk.create_folder(path_save)  # Создаем папку на yadisk
     yandex_disk.add_yadisk_locate(path_save)  # copy files from yadisk
     link = yandex_disk.add_link_from_folder_yadisk(path_save) # Опубликовал папку получил линк
 
-    # def upload_all_in_yadisk():
-    # yandex_disk.create_folder(path_save)
-    # yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
-    # link = yandex_disk.get_download_link(path_save)
-    # yandex_disk.upload_file(rf'{path_dir}\{text_file_name}',
-    #                         f'{path_save}/{text_file_name}')  # send text file from disk
-    with open(file_s) as file:
+
+    with open(text_file_name) as file:
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
 #

@@ -1,4 +1,4 @@
-1. Add send mail (Task print)
-2. Add table
-3. Add check and resiaze picturies
-4. Add menu Change Materrial and change office
+1. модуль расчета люверсов
+а) вычисляем длину периметра и считаем стоимость проварки периметра: себестоимость 30 руб. м/2
+б) указываем через какое расстояние ставить люверсы к примеру через 30 см
+
