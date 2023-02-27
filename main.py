@@ -184,7 +184,7 @@ if __name__ == "__main__":
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
-    path_save = f'upload/{organizations}/{date.today()}'
+    path_save = f'upload/{organizations}/{date.today()}/{client}'
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
