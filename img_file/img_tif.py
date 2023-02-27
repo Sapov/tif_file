@@ -51,6 +51,15 @@ def check_tiff(file_name: str):
     return width, length, resolution
 
 
+def perimetr(width, length):
+    ''' Вычисляем прериметр изображения'''
+    return (width + length)*2
+
+
+
+
+
+
 def check_resolution(lst_tif, material):
     '''
     Проверяем разрешения и уменьшаем в соответствии со стандартом

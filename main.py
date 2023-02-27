@@ -86,6 +86,10 @@ def select_material() -> str:
     return inputMenu([i for i in data.propertis_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
 
+
+
+
+
 def select_oraganization():
     '''
     Выбор организации для отправки файлов
@@ -119,6 +123,8 @@ def rec_to_file(text_file_name: str):
         for i in range(len(lst_tif)):
             w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])
             assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
+            P = img_file.img_tif.perimetr(w_l_dpi[0], w_l_dpi[1])  # периметр файла
+
             file_name = f'File # {i + 1}: {lst_tif[i]}'
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
@@ -168,18 +174,19 @@ def file_sale(file_s: str):
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
-
 if __name__ == "__main__":
     path_dir = str(input("Введите путь к каталогу: "))
-    # client = input('Введите имя клиента: ')
-    client = 1 ##################
+    client = input('Введите имя клиента: ')
     lst_files = list_file(path_dir)
-    material = select_material()
+    material = select_material()  # выбираем материал
+    '''если выбран материал Баннер (любой), то предлагаем проклейку или установку люверсов'''
+    # if 'Баннер' in material:
+    #     print('Финишная обработка')
+
     lst_tif = only_tif(lst_files)
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
-    add_border(lst_tif)  # Делаем бордер по фотографиям
-    print(lst_tif)
+    add_border(lst_tif)  # Делаем бордер по контуру всего файла
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
@@ -192,13 +199,6 @@ if __name__ == "__main__":
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
-
-    # def upload_all_in_yadisk():
-    # yandex_disk.create_folder(path_save)
-    # yandex_disk.upload_file(rf'{path_dir}\{zip_name}', f'{path_save}/{zip_name}')
-    # link = yandex_disk.get_download_link(path_save)
-    # yandex_disk.upload_file(rf'{path_dir}\{text_file_name}',
-    #                         f'{path_save}/{text_file_name}')  # send text file from disk
 
     with open(text_file_name) as file:
         new_str = file.read()
