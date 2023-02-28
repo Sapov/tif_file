@@ -31,7 +31,7 @@ def add_yadisk_locate(path):
 def add_link_from_folder_yadisk(path):
     print(f'Опубликовал папку {path}')
     # ya_link = os.system(f"yandex-disk publish {path}")
-    ya_link = subprocess.check_output(["yandex-disk", "publish", path])
+    ya_link = subprocess.check_output(["yandex-disk", "publish", f'{local_path_yadisk}{path}'])
 
     print(f' Получил {ya_link}')
     print('Type: ', type(ya_link))
