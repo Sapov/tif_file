@@ -1,28 +1,33 @@
-import os
+# import os
+#
+# import PIL
+# from PIL import Image, ImageDraw, ImageOps
+#
+#
+# def list_file(path_dir: str) -> list[str]:
+#     os.chdir(path_dir)  # переходим в указанный катлог
+#     print(os.listdir())
+#     return os.listdir()  # читаем имена файлов в список
+#
+#
+# def add_border(list_file):
+#     for i in list_files:
+#         print(i)
+#         '''Добавляем контур к файлу для понимания границ печати'''
+#         Image.MAX_IMAGE_PIXELS = None
+#         with Image.open(i) as img:
+#             print(f'открыли {i}')
+#             img_border = ImageOps.expand(img, border=100, fill='yellow')  # 1 px color -gray
+#
+#             img_border.save(i)
+#
+#
+# if __name__ == '__main__':
+#     path_dir = input('Введите путь до файлов: ')
+#     list_files = list_file(path_dir)
+#     add_border(list_files)
 
-import PIL
-from PIL import Image, ImageDraw, ImageOps
 
-
-def list_file(path_dir: str) -> list[str]:
-    os.chdir(path_dir)  # переходим в указанный катлог
-    print(os.listdir())
-    return os.listdir()  # читаем имена файлов в список
-
-
-def add_border(list_file):
-    for i in list_files:
-        print(i)
-        '''Добавляем контур к файлу для понимания границ печати'''
-        Image.MAX_IMAGE_PIXELS = None
-        with Image.open(i) as img:
-            print(f'открыли {i}')
-            img_border = ImageOps.expand(img, border=100, fill='yellow')  # 1 px color -gray
-
-            img_border.save(i)
-
-
-if __name__ == '__main__':
-    path_dir = input('Введите путь до файлов: ')
-    list_files = list_file(path_dir)
-    add_border(list_files)
+from img_file.img_tif import check_tiff
+file = "/home/sasha/Загрузки/3 часть сфера/1шт_баннер_1000х1500мм_без поляА.tif" #input("Введите файл: ")
+print(check_tiff(file))

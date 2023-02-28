@@ -25,7 +25,7 @@ def add_yadisk_locate(path):
     for i in lst_files:
         if i.endswith("txt") or i.endswith("zip"):
             print(f'Copy {i} files')
-            shutil.move(i, f'/home/sasha/Yandex.Disk/{path}')
+            shutil.move(i, f'{local_path_yadisk}{path}')
 
 
 def add_link_from_folder_yadisk(path):
