@@ -19,6 +19,7 @@ def list_file(path_dir: str) -> list[str]:
 
 
 def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
+    ''' выбираем только Tiff -  файлы'''
     return [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
 
 
@@ -194,7 +195,7 @@ if __name__ == "__main__":
     yandex_disk.create_folder(path_save)  # Создаем папку на yadisk с датой
     yandex_disk.create_folder(f'{path_save}/{client}')  # Создаем папку на yadisk с клиентскими файлами
     yandex_disk.add_yadisk_locate(f'{path_save}/{client}')  # copy files from yadisk
-    link = yandex_disk.add_link_from_folder_yadisk(f'{path_save}/{client}')  # Опубликовал папку получил линк
+    # link = yandex_disk.add_link_from_folder_yadisk(f'{path_save}/{client}')  # Опубликовал папку получил линк
 
     with open(file_s) as file:
         new_str = file.read()
