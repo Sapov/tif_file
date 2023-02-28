@@ -53,11 +53,7 @@ def check_tiff(file_name: str):
 
 def perimetr(width, length):
     ''' Вычисляем прериметр изображения'''
-    return (width + length)*2
-
-
-
-
+    return (width + length) * 2
 
 
 def check_resolution(lst_tif, material):
@@ -75,15 +71,12 @@ def check_resolution(lst_tif, material):
             print("Меньше Увеличиваем?? или оставляем")
 
 
-def add_border(lst_tif:list):
+def add_border(lst_tif: list):
     '''Добавляем контур к файлу для понимания границ печати'''
     for i in lst_tif:
         Image.MAX_IMAGE_PIXELS = None
         with Image.open(i) as img:
-            img_border = ImageOps.expand(img, border=1, fill='yellow')  # 1 px color -gray
-        #
+            img_border = ImageOps.expand(img, border=100, fill='blue')  # 1 px color -gray
+            #
             img_border.save(i)
             print(f' Сделали обводку у файла: {i}')
-
-
-

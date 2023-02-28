@@ -77,17 +77,10 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
             new_arh.close()
 
 
-# def select_material() -> str:
-#     '''Функция выбора материала для печати'''
-#     # material = pyip.inputMenu([i for i in data.price_material], numbered=True)
-#     return inputMenu([i for i in data.price_material], prompt="Выбираем материал для печати: \n", numbered=True)
+
 def select_material() -> str:
     '''Функция выбора материала для печати'''
     return inputMenu([i for i in data.propertis_material], prompt="Выбираем материал для печати: \n", numbered=True)
-
-
-
-
 
 
 def select_oraganization():
@@ -186,7 +179,7 @@ if __name__ == "__main__":
     lst_tif = only_tif(lst_files)
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
-    add_border(lst_tif)  # Делаем бордер по контуру всего файла
+    # add_border(lst_tif)  # Делаем бордер по контуру всего файла
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
@@ -195,21 +188,20 @@ if __name__ == "__main__":
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
-    path_save = f'upload/{organizations}/{date.today()}/{client}'
+    path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
     print(f'{path_dir}\{zip_name}')
     print(f'{path_save}/{zip_name}')
 
+    yandex_disk.create_folder(path_save)  # Создаем папку на yadisk с датой
+    yandex_disk.create_folder(f'{path_save}/{client}')  # Создаем папку на yadisk с клиентскими файлами
+    yandex_disk.add_yadisk_locate(f'{path_save}/{client}')  # copy files from yadisk
+    link = yandex_disk.add_link_from_folder_yadisk(f'{path_save}/{client}')  # Опубликовал папку получил линк
 
-    yandex_disk.create_folder(path_save)  # Создаем папку на yadisk
-    yandex_disk.add_yadisk_locate(path_save)  # copy files from yadisk
-    link = yandex_disk.add_link_from_folder_yadisk(path_save) # Опубликовал папку получил линк
-
-
-    with open(text_file_name) as file:
+    with open(file_s) as file:
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
-#
+    #
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
