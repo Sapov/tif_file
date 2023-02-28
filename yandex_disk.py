@@ -10,7 +10,9 @@ local_path_yadisk = '/home/sasha/Yandex.Disk/upload/' # фолдер хране�
 
 
 def create_folder(path):
-    '''Добавляем фолдер дата'''
+    '''Добавляем фолдер дата
+    Директория должна быть всегда уникальной к примеру точная дата мин/сек
+    '''
     if os.path.exists(f"{local_path_yadisk}{path}"):
         print('Директория уже создана')
     else:
@@ -28,7 +30,7 @@ def add_yadisk_locate(path):
 
 
 def add_link_from_folder_yadisk(path):
-    print(f'Опубликовал папку {local_path_yadisk}{path}')
+    print(f'Публикую папку ... {local_path_yadisk}{path}')
     ya_link = subprocess.check_output(["yandex-disk", "publish", f'{local_path_yadisk}{path}'])
     ya_link = str(ya_link)
     ya_link = ya_link.lstrip("b'")

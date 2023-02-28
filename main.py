@@ -190,8 +190,6 @@ if __name__ == "__main__":
     organizations = select_oraganization()
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
-    print(f'{path_dir}\{zip_name}')
-    print(f'{path_save}/{zip_name}')
 
     yandex_disk.create_folder(path_save)  # Создаем папку на yadisk с датой
     yandex_disk.create_folder(f'{path_save}/{client}')  # Создаем папку на yadisk с клиентскими файлами
