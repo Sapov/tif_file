@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import home_page
+from .views import index
 
 urlpatterns = [
-    path('', home_page)
+    path('', index, name='home'),
+    # path('files/', FilesCreate.as_view())
+
 ]
