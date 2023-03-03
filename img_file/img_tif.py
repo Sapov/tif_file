@@ -80,3 +80,13 @@ def add_border(lst_tif: list):
             #
             img_border.save(f'border_{i}')
             print(f' Сделали обводку у файла: {i}')
+
+
+def thumbnail(lst_tif: list):
+    '''создание `thumbnail`'''
+    for i in lst_tif:
+        Image.MAX_IMAGE_PIXELS = None
+        with Image.open(i) as img:
+            size = (150, 150)
+            img.thumbnail(size)
+            img.save(f'thumbnail_{i[:-4]}.jpg')

@@ -15,9 +15,11 @@ class Banner:
         return (self.width + self.length) * 2 * 100 / distance
 
 
-
 # banner = Banner(2, 4)
 # print(banner.perimeter())
 # print(banner.square())
 # print(banner.count_luvers(30))
 #
+print(Banner(2, 3).perimeter())
+print(Banner(2, 3).square())
+print(Banner(2, 3).count_luvers(30))

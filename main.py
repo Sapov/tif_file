@@ -10,7 +10,7 @@ import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
 import send_mail
-from img_file.img_tif import check_resolution, add_border
+from img_file.img_tif import check_resolution, add_border, thumbnail
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -76,7 +76,6 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
             new_arh = zipfile.ZipFile(f'{material_name}_{date.today()}.zip', "a")
             new_arh.write(name, compress_type=zipfile.ZIP_DEFLATED)
             new_arh.close()
-
 
 
 def select_material() -> str:
@@ -181,6 +180,8 @@ if __name__ == "__main__":
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
+
+    thumbnail(lst_tif) # делаем превьюхи
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
