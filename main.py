@@ -197,10 +197,9 @@ if __name__ == "__main__":
     yandex_disk.add_yadisk_locate(path_for_yandex_disk)  # copy files from yadisk
     link = yandex_disk.add_link_from_folder_yadisk(path_for_yandex_disk)  # Опубликовал папку получил линк
 
-    os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')
-    print(os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}'))
+    os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}') # перехожу в каталог яндекс диска
 
-    with open(text_file_name) as file:
+    with open(text_file_name) as file: # читаю файл txt
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
     #

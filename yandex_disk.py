@@ -3,8 +3,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-# local_path_yadisk = '/home/sasha/Yandex.Disk/upload/' # фолдер хранения файлов на я.Диске
-local_path_yadisk = 'C:\\Users\\sasha\\YandexDisk\\upload\\' # фолдер хранения файлов на я.Диске
+local_path_yadisk = '/home/sasha/Yandex.Disk/upload/' # фолдер хранения файлов на я.Диске
+# local_path_yadisk = 'C:\\Users\\sasha\\YandexDisk\\upload\\' # фолдер хранения файлов на я.Диске
 
 
 # class Yadisk:
@@ -32,7 +32,7 @@ def add_yadisk_locate(path):
 
 
 def add_link_from_folder_yadisk(path):
-    print(f'Публикую папку ... {local_path_yadisk}{path}')
+    print(f'Публикую папку: {local_path_yadisk}{path}')
     ya_link = subprocess.check_output(["yandex-disk", "publish", f'{local_path_yadisk}{path}'])
     ya_link = str(ya_link)
     ya_link = ya_link.lstrip("b'")
