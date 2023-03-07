@@ -76,7 +76,17 @@ def add_border(lst_tif: list):
     for i in lst_tif:
         Image.MAX_IMAGE_PIXELS = None
         with Image.open(i) as img:
-            img_border = ImageOps.expand(img, border=100, fill='yellow')  # 1 px color -gray
+            img_border = ImageOps.expand(img, border=100, fill='red')  # 1 px color -gray
             #
-            img_border.save(i)
-            print(f'Сделали обводку у файла: {i}')
+            img_border.save(f'border_{i}')
+            print(f' Сделали обводку у файла: {i}')
+
+
+def thumbnail(lst_tif: list):
+    '''создание `thumbnail`'''
+    for i in lst_tif:
+        Image.MAX_IMAGE_PIXELS = None
+        with Image.open(i) as img:
+            size = (150, 150)
+            img.thumbnail(size)
+            img.save(f'thumbnail_{i[:-4]}.jpg')

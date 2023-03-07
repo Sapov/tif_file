@@ -3,7 +3,9 @@ import shutil
 import subprocess
 from pathlib import Path
 
-local_path_yadisk = '/home/sasha/Yandex.Disk/upload/' # фолдер хранения файлов на я.Диске
+# local_path_yadisk = '/home/sasha/Yandex.Disk/upload/' # фолдер хранения файлов на я.Диске
+local_path_yadisk = 'C:\\Users\\sasha\\YandexDisk\\upload\\' # фолдер хранения файлов на я.Диске
+
 
 # class Yadisk:
 #     def __init__(self):
