@@ -191,12 +191,16 @@ if __name__ == "__main__":
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
 
+    path_for_yandex_disk = f'{path_save}/{client}' # Путь на яндекс диске для публикации
     yandex_disk.create_folder(path_save)  # Создаем папку на yadisk с датой
-    yandex_disk.create_folder(f'{path_save}/{client}')  # Создаем папку на yadisk с клиентскими файлами
-    yandex_disk.add_yadisk_locate(f'{path_save}/{client}')  # copy files from yadisk
-    link = yandex_disk.add_link_from_folder_yadisk(f'{path_save}/{client}')  # Опубликовал папку получил линк
+    yandex_disk.create_folder(path_for_yandex_disk)  # Создаем папку на yadisk с клиентскими файлами
+    yandex_disk.add_yadisk_locate(path_for_yandex_disk)  # copy files from yadisk
+    link = yandex_disk.add_link_from_folder_yadisk(path_for_yandex_disk)  # Опубликовал папку получил линк
 
-    with open(file_s) as file:
+    os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')
+    print(os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}'))
+
+    with open(text_file_name) as file:
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
     #
