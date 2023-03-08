@@ -4,6 +4,14 @@ from django.db import models
 class Contractor(models.Model):
     name = models.CharField(max_length=100, verbose_name='Поставщик продукции')
 
+    class Meta:
+        verbose_name_plural = 'Подрядчики'
+        verbose_name = 'Подрядчик'
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
 
 class Organisation(models.Model):
     name_ul = models.CharField(max_length=70, verbose_name="Имя юр. лица", help_text='Форма собственности и название')
@@ -52,7 +60,6 @@ class Product(models.Model):
     )
 
     name = models.CharField(max_length=60, verbose_name='Имя файла')
-    # order = models.ForeignKey('Orders', on_delete=models.CASCADE, verbose_name='order')
     material = models.ForeignKey("Material", on_delete=models.CASCADE, verbose_name='Материал')
     # order = models.ForeignKey('Orders', on_delete=models.CASCADE, verbose_name='Заказы')
     quantity = models.IntegerField(default=1, help_text='Введите количество', verbose_name="Количество")

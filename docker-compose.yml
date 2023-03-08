@@ -1,0 +1,23 @@
+#version : '3.8'
+#services:
+#  db:
+#    container_name: db
+#    image: postgres: 13-alpine
+#    env_file:
+#      - ./.env
+#    volumes:
+#      - ./.postgres_data:/var/lib/postgresql/data
+#    ports:
+#      - 5432:5432
+      -
+#  docker run --name django_db -p 5432:5432 -e POSTGRES_USER=sasha -e POSTGRES_PASSWORD=111 -e POSTGRES_DB=db -d postgres:13.3
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "sasha"
+      POSTGRES_PASSWORD: "111"
+    ports:
+      - "5432:5432"

@@ -10,7 +10,9 @@ import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
 import send_mail
-from img_file.img_tif import check_resolution, add_border
+from img_file.img_tif import check_resolution, add_border, thumbnail
+from calculation import Banner
+from db_connect import insert_data_in_table
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -52,10 +54,6 @@ def write_file_txt(name: str, list_text: str):
         file.write(list_text)
 
 
-# def calculation(width, length, material: str) -> float:
-#     price_material = data.price_material.get(material)
-#     return round(width * length * price_material, 2)
-
 def calculation(width, length, material: str) -> float:
     price_material = data.propertis_material.get(material)[0]
     return round(width * length * price_material, 2)
@@ -77,7 +75,6 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
             new_arh.close()
 
 
-
 def select_material() -> str:
     '''Функция выбора материала для печати'''
     return inputMenu([i for i in data.propertis_material], prompt="Выбираем материал для печати: \n", numbered=True)
@@ -94,6 +91,7 @@ def select_oraganization():
 def number_of_pieces(file_name_in_list: str) -> int:
     '''
     ищем количество в имени файла указываеться после шт
+    не покрыта тестами
     '''
     file_name_in_list = file_name_in_list.lower()
     if 'шт' in file_name_in_list:
@@ -112,6 +110,8 @@ def number_of_pieces(file_name_in_list: str) -> int:
 # запись в текстовый файл
 def rec_to_file(text_file_name: str):
     itog = 0
+    dict_propertis_banner = {}
+
     with open(text_file_name, "w") as file:
         for i in range(len(lst_tif)):
             w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])
@@ -139,6 +139,30 @@ def rec_to_file(text_file_name: str):
         print(f'Итого стоимость печати: {round(itog, 2)} руб.')
 
 
+def insert_tables(text_file_name: str):
+    dict_propertis_banner = {}
+
+    for i in range(len(lst_tif)):
+        w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])  # получили длину, ширину, DPI
+        assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
+
+        # insert in table
+        dict_propertis_banner['file_name'] = lst_tif[i]  # имя файла
+        dict_propertis_banner['quantity'] = int(number_of_pieces(lst_tif[i]))  # количество
+        dict_propertis_banner['material'] = material
+        dict_propertis_banner['length'] = w_l_dpi[1]
+        dict_propertis_banner['width'] = w_l_dpi[0]
+        dict_propertis_banner['dpi'] = w_l_dpi[2]
+        dict_propertis_banner['color_model'] = color_mode(lst_tif[i])
+        dict_propertis_banner['size'] = size_file(lst_tif[i])
+        dict_propertis_banner['price_print'] = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # стоимость
+
+        # dict_propertis_banner[organizations] = organizations
+        print(dict_propertis_banner)
+
+        insert_data_in_table(dict_propertis_banner)
+
+
 def file_sale(file_s: str):
     itog = 0
     with open(file_s, "w") as file:
@@ -149,8 +173,9 @@ def file_sale(file_s: str):
             quantity = int(number_of_pieces(lst_tif[i]))
             quantity_print = f'Количество: {quantity} шт.'
             length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
-            square_unit = (w_l_dpi[0] * w_l_dpi[
-                1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
+            square_unit = Banner(w_l_dpi[0], w_l_dpi[1]).square()  # площадь печати
+            # square_unit = (w_l_dpi[0] * w_l_dpi[
+            #     1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
             square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
             color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
             size = f'Размер: {size_file(lst_tif[i])} Мб'
@@ -180,26 +205,30 @@ if __name__ == "__main__":
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
+    # thumbnail(lst_tif) # превьюхи
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
     file_s = f'{client}_{material}_for_sale_{date.today()}.txtsale'
     file_sale(file_s)
+    # пишем в базу
+    insert_tables(text_file_name)
+
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
 
-    path_for_yandex_disk = f'{path_save}/{client}' # Путь на яндекс диске для публикации
+    path_for_yandex_disk = f'{path_save}/{client}'  # Путь на яндекс диске для публикации
     yandex_disk.create_folder(path_save)  # Создаем папку на yadisk с датой
     yandex_disk.create_folder(path_for_yandex_disk)  # Создаем папку на yadisk с клиентскими файлами
     yandex_disk.add_yadisk_locate(path_for_yandex_disk)  # copy files from yadisk
     link = yandex_disk.add_link_from_folder_yadisk(path_for_yandex_disk)  # Опубликовал папку получил линк
 
-    os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}') # перехожу в каталог яндекс диска
+    os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')  # перехожу в каталог яндекс диска
 
-    with open(text_file_name) as file: # читаю файл txt
+    with open(text_file_name) as file:  # читаю файл txt
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
     #
