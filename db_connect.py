@@ -13,7 +13,7 @@ def create_table_postgres():
         # Create Table
         with connection.cursor() as cursor:
             cursor.execute(
-                """CREATE TABLE Files(
+                """CREATE TABLE NewFiles(
                 id serial PRIMARY KEY,
                 file_name varchar(50) NOT NULL,
                 quantity integer,
@@ -24,13 +24,13 @@ def create_table_postgres():
                 color_model varchar(50) NOT NULL,
                 size varchar(50) NOT NULL,
                 price_print money,
+                organizations varchar(50) NOT NULL
                 );"""
             )
 
             print(f'Table created...')
 
-
-            _________
+        #  _________
 
 
     except Exception as _ex:
@@ -42,7 +42,7 @@ def create_table_postgres():
             print('[INFO] PostgreSQL connection closed')
 
 
-def insert_data_in_table():
+def insert_data_in_table(dict_prop_banner: dict):
     try:
         connection = psycopg2.connect(host=host,
                                       user=user,
@@ -51,9 +51,23 @@ def insert_data_in_table():
         connection.autocommit = True
 
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO files(first_name, nick_name ) VALUES ('Oleg', 'barracuda');")
+            insert_query = f"""INSERT INTO NewFiles (file_name, quantity, material, length, width,
+            dpi, color_model, size, price_print ) VALUES ('{dict_prop_banner["file_name"]}', {dict_prop_banner["quantity"]}, '{dict_prop_banner["material"]}',
+             {dict_prop_banner["length"]}, {dict_prop_banner["width"]}, {dict_prop_banner["dpi"]}, '{dict_prop_banner["color_model"]}', {dict_prop_banner["size"]},
+               {dict_prop_banner["price_print"]}, '{dict_prop_banner["organizations"]}')"""
+            cursor.execute(insert_query)
+            # connection.commit()
 
-            print(f'[INFO] Date created in table...')
+            print("запись успешно вставлена")
+
+            # # Получить результат
+            # cursor.execute("SELECT * from NewFiles")
+            # record = cursor.fetchall()
+            # # print("Результат", record)
+            # for i in record:
+            #     print(i)
+
+
 
             # Выполнение SQL-запроса для вставки данных в таблицу
             # insert_query = """ INSERT INTO mobile (ID, MODEL, PRICE) VALUES (1, 'Iphone12', 1100)"""
@@ -68,35 +82,67 @@ def insert_data_in_table():
             connection.close()
             print('[INFO] PostgreSQL connection closed')
 
-    print(dict_propertis_banner)
 
-# with connection.cursor() as cursor:
-#     cursor.execute(
-#         'SELECT version();'
-#     )
-#     print(f'Server version: {cursor.fetchone()}')
+#++++_____________
+
+def get_postgres():
+    try:
+        connection = psycopg2.connect(host=host,
+                                      user=user,
+                                      password=password,
+                                      database=dn_name)
+        connection.autocommit = True
+
+        # Create Table
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * from NewFiles")
+            record = cursor.fetchall()
+            # print("Результат", record)
+            for i in record:
+                print(i)
+
+            print(f'[INFO] Date GET in table...')
+    except Exception as _ex:
+        print("[INFO] Error while working with PostgreSQL", _ex)
+
+    finally:
+        if connection:
+            connection.close()
+            print('[INFO] PostgreSQL connection closed')
+
+def del_postgres(id):
+    try:
+        connection = psycopg2.connect(host=host,
+                                      user=user,
+                                      password=password,
+                                      database=dn_name)
+        connection.autocommit = True
+
+        # Create Table
+        with connection.cursor() as cursor:
+            # Выполнение SQL-запроса для обновления таблицы
+            update_query = f'DELETE FROM NewFiles where id = {id}'
+            # update_query = """DELETE FROM NewFiles where id = 8"""
+            cursor.execute(update_query)
+            connection.commit()
+            count = cursor.rowcount
+            print(count, "Запись успешно удалена")
+            # Получить результат
+            cursor.execute("SELECT * from NewFiles")
+            print("Результат", cursor.fetchall())
+
+            print(f'[INFO] Date GET in table...')
+    except Exception as _ex:
+        print("[INFO] Error while working with PostgreSQL", _ex)
+
+    finally:
+        if connection:
+            connection.close()
+            print('[INFO] PostgreSQL connection closed')
 
 
-# # Insert i  Table
-# with connection.cursor() as cursor:
-#     cursor.execute(
-#         """INSERT INTO files(first_name, nick_name ) VALUES
-#         ('Oleg', 'barracuda');"""
-#     )
-#
-#     print(f'[INFO] Date created in table...')
 
 
-# Get data from Table----------------
-# with connection.cursor() as cursor:
-#     cursor.execute(
-#         """SELECT * FROM files;"""
-#     )
-#     print(cursor.fetchone())
-#
-#     print(f'[INFO] Date GET in table...')
-
-# _______________
 # try:
 #     # Подключение к существующей базе данных
 #     connection = psycopg2.connect(user="sasha",
@@ -126,4 +172,7 @@ def insert_data_in_table():
 #         print("Соединение с PostgreSQL закрыто")
 
 
-create_table_postgres()
+# get_postgres() # показать записи базы
+# Удаление записей по id
+# for i in range(16,19):
+#     del_postgres(i)

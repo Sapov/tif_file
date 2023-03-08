@@ -139,10 +139,11 @@ def rec_to_file(text_file_name: str):
         print(f'Итого стоимость печати: {round(itog, 2)} руб.')
 
 
-def insert_tables(text_file_name: str):
-    dict_propertis_banner = {}
+def insert_tables(text_file_name: str, organizations):
 
     for i in range(len(lst_tif)):
+        dict_propertis_banner = {}
+
         w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])  # получили длину, ширину, DPI
         assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
 
@@ -156,9 +157,9 @@ def insert_tables(text_file_name: str):
         dict_propertis_banner['color_model'] = color_mode(lst_tif[i])
         dict_propertis_banner['size'] = size_file(lst_tif[i])
         dict_propertis_banner['price_print'] = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # стоимость
+        dict_propertis_banner['organizations'] = organizations  # organizations
 
         # dict_propertis_banner[organizations] = organizations
-        print(dict_propertis_banner)
 
         insert_data_in_table(dict_propertis_banner)
 
@@ -209,14 +210,14 @@ if __name__ == "__main__":
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name)
-    file_s = f'{client}_{material}_for_sale_{date.today()}.txtsale'
-    file_sale(file_s)
-    # пишем в базу
-    insert_tables(text_file_name)
+
+
 
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
+    # пишем в базу
+    insert_tables(text_file_name, organizations)
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
 
