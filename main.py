@@ -159,7 +159,6 @@ def insert_tables(text_file_name: str, organizations):
         dict_propertis_banner['price_print'] = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # стоимость
         dict_propertis_banner['organizations'] = organizations  # organizations
 
-        # dict_propertis_banner[organizations] = organizations
 
         insert_data_in_table(dict_propertis_banner)
 
