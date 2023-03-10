@@ -26,8 +26,3 @@
 #     path_dir = input('Введите путь до файлов: ')
 #     list_files = list_file(path_dir)
 #     add_border(list_files)
-
-
-from img_file.img_tif import check_tiff
-file = "/home/sasha/Загрузки/3 часть сфера/1шт_баннер_1000х1500мм_без поляА.tif" #input("Введите файл: ")
-print(check_tiff(file))

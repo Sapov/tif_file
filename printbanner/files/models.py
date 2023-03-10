@@ -71,7 +71,7 @@ class Product(models.Model):
                                    help_text="Для корректной печати модель должна быть CMYK")
     size = models.FloatField(default=0, verbose_name="Размер в Мб")
     # price = models.FloatFeld(default=0, verbose_name="Стоимость")
-    images = models.ImageField(upload_to='image/%d_%m_%y')
+    images = models.FileField(upload_to='image/%d_%m_%y')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Добавлено")  # date created
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Изменено")  # date update
 
@@ -86,3 +86,7 @@ class Product(models.Model):
         verbose_name_plural = 'Файлы'
         verbose_name = 'Файл'
         ordering = ['name']
+
+    class UploadArhive(models.Model):
+        path_file = models.FileField(upload_to='image/arhive/%d_%m_%y')
+        # def un_zip(self):

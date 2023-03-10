@@ -216,7 +216,7 @@ if __name__ == "__main__":
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
     # пишем в базу
-    insert_tables(text_file_name, organizations)
+    # insert_tables(text_file_name, organizations)
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
 
