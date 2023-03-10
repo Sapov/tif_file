@@ -28,6 +28,26 @@
 #     add_border(list_files)
 
 
-from img_file.img_tif import check_tiff
-file = "/home/sasha/Загрузки/3 часть сфера/1шт_баннер_1000х1500мм_без поляА.tif" #input("Введите файл: ")
-print(check_tiff(file))
+def number_of_pieces(file_name_in_list: str) -> int:
+    '''
+    ищем количество в имени файла указываеться после шт
+    '''
+    file_name_in_list = file_name_in_list.lower()
+    if 'шт' in file_name_in_list:
+        quantity_in_name_file = file_name_in_list[:file_name_in_list.find('шт')]
+        num = ""
+        print(file_name_in_list.find('шт'))
+        for i in range(file_name_in_list.find('шт') - 1, -1, -1):
+            print(file_name_in_list[i])
+            if file_name_in_list[i].isdigit():
+                num += str(file_name_in_list[i])
+
+            else:
+                continue
+        num = num[::-1]
+        print(int(num))
+        return int(num)
+    else:
+        return 1
+
+number_of_pieces('_440 гратмм12_шт')
