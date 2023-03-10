@@ -75,7 +75,7 @@ class Product(models.Model):
         ('LAB', 'lab')
     )
 
-    name = models.CharField(max_length=60, verbose_name='Имя файла')
+    Contractor = models.ForeignKey('Contractor', on_delete=models.CASCADE, verbose_name='Подрядчик')
     material = models.ForeignKey("Material", on_delete=models.CASCADE, verbose_name='Материал')
     # order = models.ForeignKey('Orders', on_delete=models.CASCADE, verbose_name='Заказы')
     quantity = models.IntegerField(default=1, help_text='Введите количество', verbose_name="Количество")
@@ -101,4 +101,4 @@ class Product(models.Model):
     class Meta:
         verbose_name_plural = 'Файлы'
         verbose_name = 'Файл'
-        ordering = ['name']
+        # ordering = ['name']
