@@ -1,19 +1,6 @@
 from django.db import models
 
 
-class Orders(models.Model):
-    user = models.ForeignKey('Organisation', on_delete=models.CASCADE, max_length=100, verbose_name='Организация')
-    order_sum = models.FloatField(verbose_name='Сумма заказа')
-
-    class Meta:
-        verbose_name_plural = 'Заказы'
-        verbose_name = 'Заказ'
-        ordering = ['user']
-
-    def __str__(self):
-        return self.user
-
-
 class Contractor(models.Model):
     name = models.CharField(max_length=100, verbose_name='Поставщик продукции')
 
