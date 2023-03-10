@@ -1,10 +1,26 @@
 from django.contrib import admin
 from .models import Material, Product, Organisation, Contractor, TypePrint
 
-admin.site.register(Material)
+
+class MaterialAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Material._meta.fields]
+
+    class Meta:
+        model = Material
+
+
+admin.site.register(Material, MaterialAdmin)
+
 admin.site.register(Product)
 admin.site.register(Organisation)
 admin.site.register(Contractor)
-admin.site.register(TypePrint)
 
 
+class TypePrintAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in TypePrint._meta.fields]
+
+    class Meta:
+        model = TypePrint
+
+
+admin.site.register(TypePrint, TypePrintAdmin)
