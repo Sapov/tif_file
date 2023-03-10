@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Contractor(models.Model):
@@ -61,10 +62,9 @@ class Product(models.Model):
         ('GREY', 'Greyscale'),
         ('LAB', 'lab')
     )
-
+    # author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
     Contractor = models.ForeignKey('Contractor', on_delete=models.CASCADE, verbose_name='Подрядчик')
     material = models.ForeignKey("Material", on_delete=models.CASCADE, verbose_name='Материал')
-    # order = models.ForeignKey('Orders', on_delete=models.CASCADE, verbose_name='Заказы')
     quantity = models.IntegerField(default=1, help_text='Введите количество', verbose_name="Количество")
     width = models.FloatField(default=0, verbose_name="Ширина", help_text="Указывается в см.")
     length = models.FloatField(default=0, verbose_name="Длина", help_text="Указывается в см.")
@@ -73,7 +73,6 @@ class Product(models.Model):
     color_model = models.CharField(max_length=10, choices=COLOR_MODE, verbose_name="Цветовая модель",
                                    help_text="Для корректной печати модель должна быть CMYK")
     size = models.FloatField(default=0, verbose_name="Размер в Мб")
-    # price = models.FloatFeld(default=0, verbose_name="Стоимость")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     images = models.FileField(upload_to='image/%d_%m_%y')
