@@ -36,9 +36,23 @@ class Organisation(models.Model):
         return self.name_ul
 
 
+class TypePrint(models.Model):
+    type_print = models.CharField(max_length=128, verbose_name='Метод печати')
+    info_type_print = models.TextField()
+
+    class Meta:
+        verbose_name_plural = 'Типы печати'
+        verbose_name = 'Тип печати'
+        ordering = ['type_print']
+
+    def __str__(self):
+        return self.type_print
+
+
 class Material(models.Model):
     name = models.CharField(max_length=100, help_text='Введите имя материала для печати',
                             verbose_name='Материал для печати', blank=True, null=True, default=None)
+    type_print = models.ForeignKey(TypePrint, on_delete=models.CASCADE, verbose_name='Тип печати', blank=True, null=True, default=None)
     price_contractor = models.FloatField(max_length=100, help_text='За 1 м2',
                                          verbose_name='Себестоимость печати в руб.', blank=True, null=True,
                                          default=None)  # стоимость в закупке
