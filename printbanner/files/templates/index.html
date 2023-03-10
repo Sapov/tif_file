@@ -5,7 +5,7 @@
     <table>
         <thead>
            <th>Id</th><th>Картинка</th><th>Материал</th><th>Кол-во</th>
-           <th>Ширина</th><th>Длина</th><th>Стоимость</th><th></th>
+           <th>Ширина</th><th>Длина</th><th>Стоимость</th><th>Дата</th>
        </thead>
         {% for product in product %}
         <tr>
@@ -19,6 +19,7 @@
 <!--            <td>{{ product.color_model }}</td>-->
             <td>{{ product.length }}</td>
             <td>{{ product.price }}</td>
+            <td>{{ product.created_at }}</td>
 
 
             <td><a href="edit/{{product.id}}">Изменить</a>

@@ -193,8 +193,10 @@ def file_sale(file_s: str):
 
 
 if __name__ == "__main__":
-    path_dir = str(input("Введите путь к каталогу: "))
-    client = input('Введите имя клиента: ')
+    # path_dir = str(input("Введите путь к каталогу: "))
+    path_dir = 'C:\\Users\\sasha\\Downloads\\05\\баннер 27.5часть'
+    # client = input('Введите имя клиента: ')
+    client = 'TEST'
     lst_files = list_file(path_dir)
     material = select_material()  # выбираем материал
     '''если выбран материал Баннер (любой), то предлагаем проклейку или установку люверсов'''
@@ -216,7 +218,7 @@ if __name__ == "__main__":
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
     # пишем в базу
-    # insert_tables(text_file_name, organizations)
+    insert_tables(text_file_name, organizations)
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
 
