@@ -164,7 +164,7 @@ def del_postgres_table():
 
 
 
-get_postgres() # показать записи базы
+# get_postgres() # показать записи базы
 # Удаление записей по id
 # for i in range(1,3):
 #     del_postgres(i)
