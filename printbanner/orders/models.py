@@ -57,7 +57,7 @@ class ProductInOrder(models.Model):
         verbose_name = 'Товар в заказе'
 
     def __str__(self):
-        return str(self.product.name)
+        return str(self.product.images)
 
     def save(self, *args, **kwargs):
         price_per_item = self.product.price
