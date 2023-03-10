@@ -1,5 +1,4 @@
 from django.db import models
-# from products.models import Products
 from files.models import Product
 from django.db.models.signals import post_save
 
@@ -44,8 +43,8 @@ class Order(models.Model):
 class ProductInOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True, default=None)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True, default=None)
-    nmb = models.IntegerField(default=1)
-    price_per_item = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    nmb = models.IntegerField(default=1, verbose_name="Кол-во")
+    price_per_item = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Стоимость 1 Ед.")
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # price * nmb
     is_active = models.BooleanField(default=True)
 
