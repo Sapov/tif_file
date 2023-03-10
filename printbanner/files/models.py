@@ -1,6 +1,19 @@
 from django.db import models
 
 
+class Orders(models.Model):
+    user = models.ForeignKey('Organisation', on_delete=models.CASCADE, max_length=100, verbose_name='Организация')
+    order_sum = models.FloatField(verbose_name='Сумма заказа')
+
+    class Meta:
+        verbose_name_plural = 'Заказы'
+        verbose_name = 'Заказ'
+        ordering = ['user']
+
+    def __str__(self):
+        return self.user
+
+
 class Contractor(models.Model):
     name = models.CharField(max_length=100, verbose_name='Поставщик продукции')
 
@@ -38,7 +51,10 @@ class Organisation(models.Model):
 class Material(models.Model):
     name = models.CharField(max_length=100, help_text='Введите имя материала для печати',
                             verbose_name='Материал для печати', blank=True, null=True, default=None)
-    price = models.FloatField(max_length=100, help_text='Стоимость печати в руб.', verbose_name='За 1 метр квадратный')
+    price_contractor = models.FloatField(max_length=100, help_text='За 1 м2',
+                                         verbose_name='Себестоимость печати в руб.', blank=True, null=True,
+                                         default=None)  # стоимость в закупке
+    price = models.FloatField(max_length=100, help_text='За 1 м2', verbose_name='Стоимость печати в руб.')
     resolution_print = models.IntegerField(help_text='разрешение для печати на материале', verbose_name='DPI',
                                            blank=True, null=True, default=None)
 
