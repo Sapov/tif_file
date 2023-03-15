@@ -11,7 +11,13 @@ class MaterialAdmin(admin.ModelAdmin):
 
 admin.site.register(Material, MaterialAdmin)
 
-admin.site.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Product._meta.fields]
+
+    class Meta:
+        model = Product
+
+admin.site.register(Product, ProductAdmin)
 admin.site.register(Organisation)
 admin.site.register(Contractor)
 

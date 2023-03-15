@@ -108,7 +108,8 @@ class Product(models.Model):
         return f'{self.id}-{self.material}'
 
     def get_absolute_url(self):
-        return reverse('files:update_files', args=[self.id])
+        return reverse('files:home')
+        # return reverse('files:update_files', args=[self.id])
 
     class Meta:
         verbose_name_plural = 'Файлы'

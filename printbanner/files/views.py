@@ -73,7 +73,7 @@ def edit(request, id):
 class FilesUpdateView(UpdateView):
     model = Product
     fields = ("__all__")
-    template_name = 'product_update_form.py'
+    template_name = 'product_update_form.html'
     # template_name_suffix = '_update_form'
 
 
