@@ -118,24 +118,8 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         ''' расчет и запись стоимость баннера'''
+        self.width, self.length, self.resolution = check_tiff(self.images) # Читаем размеры из Tiff
         price_per_item = self.material.price
         self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
         super(Product, self).save(*args, **kwargs)
 
-
-def product_order_post_save(sender, instance, created, **kwargs):
-    images = instance.images
-    all_products_in_order = Product.objects.filter(images=images)
-    # print(instance.images)
-    # print(instance.images)
-    # print(all_products_in_order)
-    instance.width = check_tiff(instance.images)[0]
-    print(instance.width)
-
-    # instance.width.save(force_update=True)
-
-    # instance.order.total_price = order_total_price
-    # instance.order.save(force_update=True)
-
-
-post_save.connect(product_order_post_save, sender=Product)
