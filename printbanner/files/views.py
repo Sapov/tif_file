@@ -2,8 +2,10 @@ from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from .models import Product
 from .forms import UploadFiles
+from django.views.generic.edit import CreateView, UpdateView
 
-from django.core.files.storage import FileSystemStorage
+
+# from django.core.files.storage import FileSystemStorage
 
 
 def index(request):
@@ -20,7 +22,6 @@ def create(request):
         # product.length = request.POST.get('length')
         product.path_file = request.POST.get('images')
         product.save()
-
 
         return HttpResponseRedirect("/")
 
@@ -49,3 +50,34 @@ def delete(request, id):
         return HttpResponseRedirect("/")
     except Product.DoesNotExist:
         return HttpResponseNotFound("<h2>Клиент не найден</h2>")
+
+
+def edit(request, id):
+    try:
+        product = Product.objects.get(id=id)
+
+        if request.POST:
+            product.quantity = request.POST.get("quantity")
+            product.width = request.POST.get("width")
+            product.length = request.POST.get("length")
+            product.save()
+            return HttpResponseRedirect("/")
+        else:
+            return render(request, "edit.html",
+                          {"product": product, 'title': 'Редактрирование файлов'})
+
+    except Product.DoesNotExist:
+        return HttpResponseNotFound("<h2>Клиент не найден</h2>")
+
+
+class FilesUpdateView(UpdateView):
+    model = Product
+    fields = ("__all__")
+    template_name = 'product_update_form.py'
+    # template_name_suffix = '_update_form'
+
+
+class FilesCreateView(CreateView):
+    model = Product
+    # fields = ['quantity', 'material' , 'width', 'length', ]
+    fields = ("__all__")

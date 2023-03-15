@@ -1,10 +1,10 @@
 from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
+from django.urls import reverse
 
 # from img_file.img_tif import check_tiff
 from .tiff_file import check_tiff
-
 
 
 class Contractor(models.Model):
@@ -57,7 +57,8 @@ class TypePrint(models.Model):
 class Material(models.Model):
     name = models.CharField(max_length=100, help_text='Введите имя материала для печати',
                             verbose_name='Материал для печати', blank=True, null=True, default=None)
-    type_print = models.ForeignKey(TypePrint, on_delete=models.CASCADE, verbose_name='Тип печати', blank=True, null=True, default=None)
+    type_print = models.ForeignKey(TypePrint, on_delete=models.CASCADE, verbose_name='Тип печати', blank=True,
+                                   null=True, default=None)
     price_contractor = models.FloatField(max_length=100, help_text='За 1 м2',
                                          verbose_name='Себестоимость печати в руб.', blank=True, null=True,
                                          default=None)  # стоимость в закупке
@@ -106,17 +107,18 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.id}-{self.material}'
 
+    def get_absolute_url(self):
+        return reverse('files:update_files', args=[self.id])
+
     class Meta:
         verbose_name_plural = 'Файлы'
         verbose_name = 'Файл'
         # ordering = ['name']
 
     def save(self, *args, **kwargs):
+        ''' расчет и запись стоимость баннера'''
         price_per_item = self.material.price
-
-        self.price = (self.width)/100 * (self.length)/100 * self.quantity * price_per_item
-        # self.total_price = self.nmb * price_per_item
-        print(price_per_item)
+        self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
         super(Product, self).save(*args, **kwargs)
 
 
@@ -128,11 +130,11 @@ def product_order_post_save(sender, instance, created, **kwargs):
     # print(all_products_in_order)
     instance.width = check_tiff(instance.images)[0]
     print(instance.width)
+
     # instance.width.save(force_update=True)
-
-
 
     # instance.order.total_price = order_total_price
     # instance.order.save(force_update=True)
+
 
 post_save.connect(product_order_post_save, sender=Product)
