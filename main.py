@@ -108,7 +108,7 @@ def number_of_pieces(file_name_in_list: str) -> int:
 
 
 # запись в текстовый файл
-def rec_to_file(text_file_name: str):
+def rec_to_file(text_file_name: str, lst_tif:list, material):
     itog = 0
     dict_propertis_banner = {}
 
@@ -192,7 +192,10 @@ def file_sale(file_s: str):
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
-if __name__ == "__main__":
+
+
+
+def main():
     path_dir = str(input("Введите путь к каталогу: "))
     client = input('Введите имя клиента: ')
     lst_files = list_file(path_dir)
@@ -208,10 +211,7 @@ if __name__ == "__main__":
     # thumbnail(lst_tif) # превьюхи
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
-    rec_to_file(text_file_name)
-
-
-
+    rec_to_file(text_file_name, lst_tif, material)
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
@@ -241,3 +241,7 @@ if __name__ == "__main__":
     assert type(list_file(path_dir)) == list
     assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
     assert type(lst_files) == list, "Список list_file  должен быть list (списком)"
+
+
+if __name__ == "__main__":
+    main()
