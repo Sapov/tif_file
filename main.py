@@ -208,7 +208,7 @@ def main():
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
-    # thumbnail(lst_tif) # превьюхи
+    # thumbnail(lst_tif) # превьюхи --
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name, lst_tif, material)
