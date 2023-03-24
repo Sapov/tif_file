@@ -22,7 +22,7 @@ def resize_image(file_name: str, new_dpi: int):
             img = img.resize((int(width_new_px), int(length_new_px)))
             # img.save(f'new{file_name}', dpi=(new_dpi, new_dpi))
             img.save(f'{file_name}', dpi=(new_dpi, new_dpi))
-        print(f'Изменил размер файла {file_name} c {resolution} dpi на {new_dpi} dpi\n')
+        print(f'[INFO] Изменил размер файла {file_name} c {resolution} dpi на {new_dpi} dpi\n')
 
     except PIL.UnidentifiedImageError:
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
@@ -65,10 +65,12 @@ def check_resolution(lst_tif, material):
     '''
     for i in lst_tif:
         if check_tiff(i)[2] > data.propertis_material.get(material)[1]:
-            print("Разрешение больше Уменьшаем")
+            print("[INFO] Разрешение больше необходимого Уменьшаем!!")
             resize_image(i, data.propertis_material.get(material)[1])
+        elif check_tiff(i)[2] > data.propertis_material.get(material)[1]:
+            print('[INFO] Разрешение соответствует требованиям')
         else:
-            print("Меньше Увеличиваем?? или оставляем")
+            print("[INFO] Низкое разрешение не соответствует требованиям")
 
 
 def add_border(lst_tif: list):

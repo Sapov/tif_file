@@ -1,6 +1,4 @@
 from django.db import models
-from django.conf import settings
-from django.db.models.signals import post_save
 from django.urls import reverse
 
 # from img_file.img_tif import check_tiff
@@ -118,6 +116,9 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         ''' расчет и запись стоимость баннера'''
+        # check type file
+        # calculation
+        # preview
         self.width, self.length, self.resolution = check_tiff(self.images) # Читаем размеры из Tiff
         price_per_item = self.material.price
         self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
