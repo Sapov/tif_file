@@ -9,7 +9,7 @@ from pathlib import Path
 import img_file.img_tif
 import yandex_disk
 from pyinputplus import inputMenu
-# import send_mail
+import send_mail
 from img_file.img_tif import check_resolution, add_border, thumbnail
 from calculation import Banner
 from db_connect import insert_data_in_table
@@ -108,7 +108,7 @@ def number_of_pieces(file_name_in_list: str) -> int:
 
 
 # запись в текстовый файл
-def rec_to_file(text_file_name: str):
+def rec_to_file(text_file_name: str, lst_tif:list, material):
     itog = 0
     dict_propertis_banner = {}
 
@@ -192,11 +192,12 @@ def file_sale(file_s: str):
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
-if __name__ == "__main__":
-    # path_dir = str(input("Введите путь к каталогу: "))
-    path_dir = 'C:\\Users\\sasha\\Downloads\\05\\баннер 27.5часть'
-    # client = input('Введите имя клиента: ')
-    client = 'TEST'
+
+
+
+def main():
+    path_dir = str(input("Введите путь к каталогу: "))
+    client = input('Введите имя клиента: ')
     lst_files = list_file(path_dir)
     material = select_material()  # выбираем материал
     '''если выбран материал Баннер (любой), то предлагаем проклейку или установку люверсов'''
@@ -207,18 +208,15 @@ if __name__ == "__main__":
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
-    # thumbnail(lst_tif) # превьюхи
+    # thumbnail(lst_tif) # превьюхи --
 
     text_file_name = f'{material}_for_print_{date.today()}.txt'
-    rec_to_file(text_file_name)
-
-
-
+    rec_to_file(text_file_name, lst_tif, material)
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
     # пишем в базу
-    insert_tables(text_file_name, organizations)
+    # insert_tables(text_file_name, organizations)
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
 
@@ -229,10 +227,10 @@ if __name__ == "__main__":
     link = yandex_disk.add_link_from_folder_yadisk(path_for_yandex_disk)  # Опубликовал папку получил линк
 
     os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')  # перехожу в каталог яндекс диска
-    # отсылаем почту
-    # with open(text_file_name) as file:  # читаю файл txt
-    #     new_str = file.read()
-    #     send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
+
+    with open(text_file_name) as file:  # читаю файл txt
+        new_str = file.read()
+        send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
     #
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
@@ -243,3 +241,7 @@ if __name__ == "__main__":
     assert type(list_file(path_dir)) == list
     assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
     assert type(lst_files) == list, "Список list_file  должен быть list (списком)"
+
+
+if __name__ == "__main__":
+    main()
