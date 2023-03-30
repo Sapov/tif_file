@@ -78,6 +78,6 @@ class WorkFile:
 
 
 
-print(WorkFile('test.cdr').check_type_file())
-print(WorkFile('printbanner/media/image/15_03_23/8шт_баннер_420х594мм_безполяАTEST_AHsq3ke.tif').color_mode())
-print(WorkFile('printbanner/media/image/15_03_23/8шт_баннер_420х594мм_безполяАTEST_AHsq3ke.tif').size_file())
+# print(WorkFile('test.cdr').check_type_file())
+# print(WorkFile('printbanner/media/image/15_03_23/8шт_баннер_420х594мм_безполяАTEST_AHsq3ke.tif').color_mode())
+# print(WorkFile('printbanner/media/image/15_03_23/8шт_баннер_420х594мм_безполяАTEST_AHsq3ke.tif').size_file())

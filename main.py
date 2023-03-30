@@ -16,6 +16,9 @@ from db_connect import insert_data_in_table
 
 
 def list_file(path_dir: str) -> list[str]:
+    '''
+    получаем путь читаем все файлы в каталоге
+    '''
     os.chdir(path_dir)  # переходим в указанный катлог
     return os.listdir()  # читаем имена файлов в список
 
