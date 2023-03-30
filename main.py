@@ -53,7 +53,6 @@ def size_file(name_file: str) -> float:
 
 def write_file_txt(name: str, list_text: str):
     with open(f'{name}_{date.today()}.txt', "w") as file:
-        # print(list_text, file=file)
         file.write(list_text)
 
 
@@ -94,7 +93,7 @@ def select_oraganization():
 def number_of_pieces(file_name_in_list: str) -> int:
     '''
     ищем количество в имени файла указываеться после шт
-    не покрыта тестами
+    !!!не покрыта тестами!!!
     '''
     file_name_in_list = file_name_in_list.lower()
     if 'шт' in file_name_in_list:
@@ -111,7 +110,7 @@ def number_of_pieces(file_name_in_list: str) -> int:
 
 
 # запись в текстовый файл
-def rec_to_file(text_file_name: str, lst_tif:list, material):
+def rec_to_file(text_file_name: str, lst_tif: list, material):
     itog = 0
     dict_propertis_banner = {}
 
@@ -142,8 +141,7 @@ def rec_to_file(text_file_name: str, lst_tif:list, material):
         print(f'Итого стоимость печати: {round(itog, 2)} руб.')
 
 
-def insert_tables(text_file_name: str, organizations):
-
+def insert_tables(text_file_name: str, organizations, lst_tif: list, material: str):
     for i in range(len(lst_tif)):
         dict_propertis_banner = {}
 
@@ -161,7 +159,6 @@ def insert_tables(text_file_name: str, organizations):
         dict_propertis_banner['size'] = size_file(lst_tif[i])
         dict_propertis_banner['price_print'] = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # стоимость
         dict_propertis_banner['organizations'] = organizations  # organizations
-
 
         insert_data_in_table(dict_propertis_banner)
 
@@ -193,9 +190,6 @@ def file_sale(file_s: str):
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
         print(f'Итого продажа: {round(itog, 2)} руб.')
-
-
-
 
 
 def main():
