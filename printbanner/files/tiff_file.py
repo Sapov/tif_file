@@ -1,21 +1,23 @@
+import os
+
 from PIL import Image, ImageOps
 
 
-def thumbnail(i):
+
+def thumbnail(file_name: str):
     '''создание `thumbnail`'''
     # for i in lst_tif:
     Image.MAX_IMAGE_PIXELS = None
-    with Image.open(i) as img:
+    with Image.open(file_name) as img:
         size = (150, 150)
         img.thumbnail(size)
-        img.save(f'thumbnail_{i}.jpg')
-
+        img.save(f'thumbnail_{file_name}.jpg')
 
 
 def check_tiff(file_name: str):
     '''
     :param file_name: принимает имя файла
-    :return: возращает кортеж (длина ширина (см) и разрешение файла (dpi)
+    :return: возвращает кортеж (длина ширина (см) и разрешение файла (dpi)
     '''
 
     try:
@@ -32,4 +34,3 @@ def check_tiff(file_name: str):
 Решение: Photoshop / слои / выполнить сведение''')
 
     return width, length, resolution
-
