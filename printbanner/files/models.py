@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 
 # from img_file.img_tif import check_tiff
-from .tiff_file import check_tiff
+from .tiff_file import check_tiff, thumbnail
 
 
 class Contractor(models.Model):
@@ -88,7 +88,7 @@ class Product(models.Model):
     length = models.FloatField(default=0, verbose_name="Длина", help_text="Указывается в см.")
     resolution = models.IntegerField(default=0, verbose_name="Разрешение",
                                      help_text="для баннера 72 dpi, для Пленки 150 dpi")
-    color_model = models.CharField(max_length=10, choices=COLOR_MODE, verbose_name="Цветовая модель",
+    color_model = models.CharField(max_length=10, default='CMYK', choices=COLOR_MODE, verbose_name="Цветовая модель",
                                    help_text="Для корректной печати модель должна быть CMYK")
     size = models.FloatField(default=0, verbose_name="Размер в Мб")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -122,5 +122,6 @@ class Product(models.Model):
         self.width, self.length, self.resolution = check_tiff(self.images) # Читаем размеры из Tiff
         price_per_item = self.material.price
         self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
+        thumbnail(self.images)
         super(Product, self).save(*args, **kwargs)
 

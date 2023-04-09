@@ -1,24 +1,21 @@
-from datetime import date, datetime
+from datetime import date
 import PIL
 from PIL import Image
 import os
 import zipfile
 import data
 from tqdm import tqdm
-from pathlib import Path
 import img_file.img_tif
-import yandex_disk
+# import yandex_disk
+from yandex_disk import Yadisk
 from pyinputplus import inputMenu
 import send_mail
-from img_file.img_tif import check_resolution, add_border, thumbnail
+from img_file.img_tif import check_resolution
 from calculation import Banner
-from db_connect import insert_data_in_table
+from BD.db_connect import insert_data_in_table
 
 
 def list_file(path_dir: str) -> list[str]:
-    '''
-    получаем путь читаем все файлы в каталоге
-    '''
     os.chdir(path_dir)  # переходим в указанный катлог
     return os.listdir()  # читаем имена файлов в список
 
@@ -53,6 +50,7 @@ def size_file(name_file: str) -> float:
 
 def write_file_txt(name: str, list_text: str):
     with open(f'{name}_{date.today()}.txt', "w") as file:
+        # print(list_text, file=file)
         file.write(list_text)
 
 
@@ -93,7 +91,7 @@ def select_oraganization():
 def number_of_pieces(file_name_in_list: str) -> int:
     '''
     ищем количество в имени файла указываеться после шт
-    !!!не покрыта тестами!!!
+    не покрыта тестами
     '''
     file_name_in_list = file_name_in_list.lower()
     if 'шт' in file_name_in_list:
@@ -141,7 +139,7 @@ def rec_to_file(text_file_name: str, lst_tif: list, material):
         print(f'Итого стоимость печати: {round(itog, 2)} руб.')
 
 
-def insert_tables(text_file_name: str, organizations, lst_tif: list, material: str):
+def insert_tables(text_file_name: str, organizations):
     for i in range(len(lst_tif)):
         dict_propertis_banner = {}
 
@@ -218,17 +216,17 @@ def main():
     zip_name = f'{material}_{date.today()}.zip'
 
     path_for_yandex_disk = f'{path_save}/{client}'  # Путь на яндекс диске для публикации
-    yandex_disk.create_folder(path_save)  # Создаем папку на yadisk с датой
-    yandex_disk.create_folder(path_for_yandex_disk)  # Создаем папку на yadisk с клиентскими файлами
-    yandex_disk.add_yadisk_locate(path_for_yandex_disk)  # copy files from yadisk
-    link = yandex_disk.add_link_from_folder_yadisk(path_for_yandex_disk)  # Опубликовал папку получил линк
+    Yadisk.create_folder(path_save)  # Создаем папку на yadisk с датой
+    Yadisk.create_folder(path_for_yandex_disk)  # # Создаем папку на yadisk с клиентскими файлами
+    Yadisk.add_yadisk_locate(path_for_yandex_disk)  # copy files in yadisk
+    link = Yadisk.add_link_from_folder_yadisk(path_for_yandex_disk)  # Опубликовал папку получил линк
 
     os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')  # перехожу в каталог яндекс диска
 
     with open(text_file_name) as file:  # читаю файл txt
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
-
+    #
     assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
