@@ -1,9 +1,5 @@
-import os
-
-from PIL import Image, ImageOps
-
-
-
+from PIL import Image
+from .db_connect import Databese
 def thumbnail(file_name: str):
     '''создание `thumbnail`'''
     # for i in lst_tif:
@@ -11,7 +7,10 @@ def thumbnail(file_name: str):
     with Image.open(file_name) as img:
         size = (150, 150)
         img.thumbnail(size)
-        img.save(f'thumbnail_{file_name}.jpg')
+        path_preview = '/home/sasha/PycharmProjects/tif_file/printbanner/media/image/preview/' + f'thumbnail_{file_name}.jpg'
+        Databese(f'image/preview/' + f'thumbnail_{file_name}.jpg').insert_preview()
+
+        img.save(path_preview)
 
 
 def check_tiff(file_name: str):

@@ -6,13 +6,12 @@ import zipfile
 import data
 from tqdm import tqdm
 import img_file.img_tif
-# import yandex_disk
-from yandex_disk import Yadisk
+import yandex_disk
+from yandex_disk import Yadisk, local_path_yadisk
 from pyinputplus import inputMenu
 import send_mail
 from img_file.img_tif import check_resolution
 from calculation import Banner
-from BD.db_connect import insert_data_in_table
 
 
 def list_file(path_dir: str) -> list[str]:
@@ -216,12 +215,13 @@ def main():
     zip_name = f'{material}_{date.today()}.zip'
 
     path_for_yandex_disk = f'{path_save}/{client}'  # Путь на яндекс диске для публикации
-    Yadisk.create_folder(path_save)  # Создаем папку на yadisk с датой
-    Yadisk.create_folder(path_for_yandex_disk)  # # Создаем папку на yadisk с клиентскими файлами
-    Yadisk.add_yadisk_locate(path_for_yandex_disk)  # copy files in yadisk
-    link = Yadisk.add_link_from_folder_yadisk(path_for_yandex_disk)  # Опубликовал папку получил линк
+    Yadisk(path_save).create_folder()  # Создаем папку на yadisk с датой
+    Yadisk(path_for_yandex_disk).create_folder()  # # Создаем папку на yadisk с клиентскими файлами
+    Yadisk(path_for_yandex_disk).add_yadisk_locate()  # copy files in yadisk
+    link = Yadisk(path_for_yandex_disk).add_link_from_folder_yadisk()  # Опубликовал папку получил линк
 
     os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')  # перехожу в каталог яндекс диска
+
 
     with open(text_file_name) as file:  # читаю файл txt
         new_str = file.read()

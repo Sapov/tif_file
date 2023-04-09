@@ -1,7 +1,7 @@
 import psycopg2
-from config import host, user, password, dn_name
-from django.db import models
-from datetime import datetime
+# from config import host, user, password, dn_name
+from .config import host, user, password, dn_name
+# from config import host, user, password, dn_name
 
 
 def generate_dict():
@@ -19,40 +19,6 @@ def generate_dict():
     dict_propertis_banner['price_print'] = 202.5  # стоимость
     dict_propertis_banner['organizations'] = 'organizations'  # organizations
     return dict_propertis_banner
-
-
-
-# def insert_data_in_table(dict_prop_banner: dict):
-#     '''
-#     Вставляем данные в таблицу'''
-#
-#     try:
-#         connection = psycopg2.connect(host=host,
-#                                       user=user,
-#                                       password=password,
-#                                       database=dn_name)
-#         connection.autocommit = True
-#
-#         with connection.cursor() as cursor:
-#             insert_query = f"""INSERT INTO NewFiles (file_name, quantity, material, length, width,
-#             dpi, color_model, size, price_print, organizations ) VALUES ('{dict_prop_banner["file_name"]}', {dict_prop_banner["quantity"]}, '{dict_prop_banner["material"]}',
-#              {dict_prop_banner["length"]}, {dict_prop_banner["width"]}, {dict_prop_banner["dpi"]}, '{dict_prop_banner["color_model"]}', {dict_prop_banner["size"]},
-#                {dict_prop_banner["price_print"]}, '{dict_prop_banner["organizations"]}')"""
-#             cursor.execute(insert_query)
-#             # connection.commit()
-#
-#             print("запись успешно вставлена")
-#
-#
-#
-#     except Exception as _ex:
-#         print("[INFO] Error while working with PostgreSQL", _ex)
-#
-#     finally:
-#         if connection:
-#             connection.close()
-#             print('[INFO] PostgreSQL connection closed')
-#
 
 
 def get_postgres():
@@ -140,20 +106,9 @@ def del_postgres_table():
             print('[INFO] PostgreSQL connection closed')
 
 
-# get_postgres() # показать записи базы
-# Удаление записей по id
-# for i in range(1,3):
-#     del_postgres(i)
-
-# del_postgres_table()
-# create_table_postgres()
-
-
-#
-# insert_data_in_table(generate_dict())
-
 class Databese:
-    def __init__(self):
+    def __init__(self, path_preview):
+        self.path_preview = path_preview
         self.connection = psycopg2.connect(host=host,
                                            user=user,
                                            password=password,
@@ -163,7 +118,7 @@ class Databese:
 
     def get_bd(self):
         with self.connection:
-            self.cursor.execute("SELECT * from NewFiles")
+            self.cursor.execute("SELECT * from FILES_PRODUCT")
             record = self.cursor.fetchall()
             for i in record:
                 print(i)
@@ -196,20 +151,35 @@ class Databese:
         Вставляем данные в таблицу FILES_PRODUCT'''
 
         with self.connection.cursor() as cursor:
-                insert_query = f"""INSERT INTO FILES_PRODUCT (quantity, width, length, resolution, color_model, size,
+            insert_query = f"""INSERT INTO FILES_PRODUCT (quantity, width, length, resolution, color_model, size,
                  images, price, created_at, updated_at) VALUES 
                 ({dict_prop_banner["quantity"]}, {dict_prop_banner["width"]}, {dict_prop_banner["length"]}, 
                 {dict_prop_banner["dpi"]}, '{dict_prop_banner["color_model"]}', {dict_prop_banner["size"]},
                  '{dict_prop_banner["file_name"]}', {dict_prop_banner["price_print"]}, {LOCALTIMESTAMP}, {LOCALTIMESTAMP}
                 )
                 """
-                cursor.execute(insert_query)
-                # connection.commit()
+            cursor.execute(insert_query)
+            # connection.commit()
 
-                print("запись успешно вставлена")
+            print("запись успешно вставлена")
+
+    def update_last_row(self):
+        print(self.path_preview)
+        with self.connection:
+            self.cursor.execute(
+                f'''UPDATE FILES_PRODUCT SET preview_images = '{self.path_preview}' WHERE id = (SELECT max(id) from FILES_PRODUCT);''')
+
+    def insert_preview(self):
+        print(self.path_preview)
+        with self.connection:
+            self.cursor.execute(
+                f'''UPDATE FILES_PRODUCT SET preview_images = '{self.path_preview}' WHERE id = (SELECT max(id) from FILES_PRODUCT);''')
+            f''' INSERT INTO FILES_PRODUCT (preview_images) VALUES('{self.path_preview}')'''
 
 
-#
-if __name__ == '__main__':
-    db = Databese().get_bd()
-    print(db)
+# #
+# if __name__ == '__main__':
+#     # db = Databese().get_bd()
+#     db = Databese('image/preview/thumbnail_1шт_баннер_680х3720мм_поле_5см.tif.jpg').insert_preview()
+#     #
+#     # print(db)
