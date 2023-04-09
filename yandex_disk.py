@@ -40,5 +40,3 @@ class Yadisk:
         print(f'Ссылка на яндекс диск {ya_link}')
 
         return ya_link
-
-

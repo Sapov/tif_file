@@ -108,7 +108,7 @@ def number_of_pieces(file_name_in_list: str) -> int:
 
 
 # запись в текстовый файл
-def rec_to_file(text_file_name: str, lst_tif:list, material):
+def rec_to_file(text_file_name: str, lst_tif: list, material):
     itog = 0
     dict_propertis_banner = {}
 
@@ -140,7 +140,6 @@ def rec_to_file(text_file_name: str, lst_tif:list, material):
 
 
 def insert_tables(text_file_name: str, organizations):
-
     for i in range(len(lst_tif)):
         dict_propertis_banner = {}
 
@@ -158,7 +157,6 @@ def insert_tables(text_file_name: str, organizations):
         dict_propertis_banner['size'] = size_file(lst_tif[i])
         dict_propertis_banner['price_print'] = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # стоимость
         dict_propertis_banner['organizations'] = organizations  # organizations
-
 
         insert_data_in_table(dict_propertis_banner)
 
@@ -190,9 +188,6 @@ def file_sale(file_s: str):
 
         file.write(f'Итого: {round(itog, 2)} руб.\n')
         print(f'Итого продажа: {round(itog, 2)} руб.')
-
-
-
 
 
 def main():
