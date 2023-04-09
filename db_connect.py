@@ -5,9 +5,9 @@ from datetime import datetime
 
 
 def generate_dict():
-    dict_propertis_banner ={}
+    dict_propertis_banner = {}
 
-     # insert in table
+    # insert in table
     dict_propertis_banner['file_name'] = 'testname'  # имя файла
     dict_propertis_banner['quantity'] = 333  # количество
     dict_propertis_banner['material'] = 'test_material'
@@ -16,53 +16,10 @@ def generate_dict():
     dict_propertis_banner['dpi'] = 72
     dict_propertis_banner['color_model'] = 'RGB'
     dict_propertis_banner['size'] = 1000
-    dict_propertis_banner['price_print'] = 202.5 # стоимость
+    dict_propertis_banner['price_print'] = 202.5  # стоимость
     dict_propertis_banner['organizations'] = 'organizations'  # organizations
     return dict_propertis_banner
 
-
-
-def create_table_postgres():
-    '''
-    Добавляем новую таблицу
-    '''
-    try:
-        connection = psycopg2.connect(host=host,
-                                      user=user,
-                                      password=password,
-                                      database=dn_name)
-        connection.autocommit = True
-
-        # Create Table
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """CREATE TABLE NewTest(
-                id serial PRIMARY KEY,
-                
-                quantity integer,
-                material varchar(50) NOT NULL,
-                length varchar(50) NOT NULL,
-                width varchar(50) NOT NULL,
-                dpi integer,
-                color_model varchar(50) NOT NULL,
-                size varchar(50) NOT NULL,
-                price_print money,
-                organizations varchar(50) NOT NULL
-                );"""
-            )
-
-            print(f'Table created...')
-
-        #  _________
-
-
-    except Exception as _ex:
-        print("[INFO] Error while working with PostgreSQL", _ex)
-
-    finally:
-        if connection:
-            connection.close()
-            print('[INFO] PostgreSQL connection closed')
 
 
 # def insert_data_in_table(dict_prop_banner: dict):
@@ -96,45 +53,6 @@ def create_table_postgres():
 #             connection.close()
 #             print('[INFO] PostgreSQL connection closed')
 #
-
-
-def insert_data_in_table(dict_prop_banner: dict):
-    '''
-    Вставляем данные в таблицу FILES_PRODUCT'''
-
-    try:
-        connection = psycopg2.connect(host=host,
-                                      user=user,
-                                      password=password,
-                                      database=dn_name)
-        connection.autocommit = True
-
-        # )
-
-        with connection.cursor() as cursor:
-            # SET TimeZone = 'UTC';
-            # SELECT TIME '07:00' AT TIME ZONE 'Australia/Sydney';
-            insert_query = f"""INSERT INTO FILES_PRODUCT (quantity, width, length, resolution, color_model, size,
-             images, price, created_at, updated_at) VALUES 
-            ({dict_prop_banner["quantity"]}, {dict_prop_banner["width"]}, {dict_prop_banner["length"]}, 
-            {dict_prop_banner["dpi"]}, '{dict_prop_banner["color_model"]}', {dict_prop_banner["size"]},
-             '{dict_prop_banner["file_name"]}', {dict_prop_banner["price_print"]}, {LOCALTIMESTAMP}, {LOCALTIMESTAMP}
-            )
-            """
-            cursor.execute(insert_query)
-            # connection.commit()
-
-            print("запись успешно вставлена")
-
-
-
-    except Exception as _ex:
-        print("[INFO] Error while working with PostgreSQL", _ex)
-
-    finally:
-        if connection:
-            connection.close()
-            print('[INFO] PostgreSQL connection closed')
 
 
 def get_postgres():
@@ -221,6 +139,7 @@ def del_postgres_table():
             connection.close()
             print('[INFO] PostgreSQL connection closed')
 
+
 # get_postgres() # показать записи базы
 # Удаление записей по id
 # for i in range(1,3):
@@ -231,6 +150,66 @@ def del_postgres_table():
 
 
 #
-# if __name__ == '__main__':
+# insert_data_in_table(generate_dict())
+
+class Databese:
+    def __init__(self):
+        self.connection = psycopg2.connect(host=host,
+                                           user=user,
+                                           password=password,
+                                           database=dn_name)
+        self.connection.autocommit = True
+        self.cursor = self.connection.cursor()
+
+    def get_bd(self):
+        with self.connection:
+            self.cursor.execute("SELECT * from NewFiles")
+            record = self.cursor.fetchall()
+            for i in record:
+                print(i)
+
+    def create_table_postgres(self):
+        '''
+        Добавляем новую таблицу
+        '''
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                """CREATE TABLE NewTest(
+                id serial PRIMARY KEY,
+
+                quantity integer,
+                material varchar(50) NOT NULL,
+                length varchar(50) NOT NULL,
+                width varchar(50) NOT NULL,
+                dpi integer,
+                color_model varchar(50) NOT NULL,
+                size varchar(50) NOT NULL,
+                price_print money,
+                organizations varchar(50) NOT NULL
+                );"""
+            )
+
+            print(f'Table created...')
+
+    def insert_data_in_table(self, dict_prop_banner: dict):
+        '''
+        Вставляем данные в таблицу FILES_PRODUCT'''
+
+        with self.connection.cursor() as cursor:
+                insert_query = f"""INSERT INTO FILES_PRODUCT (quantity, width, length, resolution, color_model, size,
+                 images, price, created_at, updated_at) VALUES 
+                ({dict_prop_banner["quantity"]}, {dict_prop_banner["width"]}, {dict_prop_banner["length"]}, 
+                {dict_prop_banner["dpi"]}, '{dict_prop_banner["color_model"]}', {dict_prop_banner["size"]},
+                 '{dict_prop_banner["file_name"]}', {dict_prop_banner["price_print"]}, {LOCALTIMESTAMP}, {LOCALTIMESTAMP}
+                )
+                """
+                cursor.execute(insert_query)
+                # connection.commit()
+
+                print("запись успешно вставлена")
+
+
 #
-insert_data_in_table(generate_dict())
+if __name__ == '__main__':
+    db = Databese().get_bd()
+    print(db)
