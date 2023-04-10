@@ -1,24 +1,7 @@
 import psycopg2
-# from config import host, user, password, dn_name
 from .config import host, user, password, dn_name
 # from config import host, user, password, dn_name
 
-
-def generate_dict():
-    dict_propertis_banner = {}
-
-    # insert in table
-    dict_propertis_banner['file_name'] = 'testname'  # имя файла
-    dict_propertis_banner['quantity'] = 333  # количество
-    dict_propertis_banner['material'] = 'test_material'
-    dict_propertis_banner['length'] = 200
-    dict_propertis_banner['width'] = 300
-    dict_propertis_banner['dpi'] = 72
-    dict_propertis_banner['color_model'] = 'RGB'
-    dict_propertis_banner['size'] = 1000
-    dict_propertis_banner['price_print'] = 202.5  # стоимость
-    dict_propertis_banner['organizations'] = 'organizations'  # organizations
-    return dict_propertis_banner
 
 
 def get_postgres():
@@ -174,12 +157,5 @@ class Databese:
         with self.connection:
             self.cursor.execute(
                 f'''UPDATE FILES_PRODUCT SET preview_images = '{self.path_preview}' WHERE id = (SELECT max(id) from FILES_PRODUCT);''')
-            f''' INSERT INTO FILES_PRODUCT (preview_images) VALUES('{self.path_preview}')'''
+            # f''' INSERT INTO FILES_PRODUCT (preview_images) VALUES('{self.path_preview}')''')
 
-
-# #
-# if __name__ == '__main__':
-#     # db = Databese().get_bd()
-#     db = Databese('image/preview/thumbnail_1шт_баннер_680х3720мм_поле_5см.tif.jpg').insert_preview()
-#     #
-#     # print(db)

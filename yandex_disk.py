@@ -12,7 +12,6 @@ class Yadisk:
 
     def __init__(self, path):
         self.path = path
-        # self.local_path_yadisk = local_path_yadisk
 
     def create_folder(self):
         '''Добавляем фолдер дата

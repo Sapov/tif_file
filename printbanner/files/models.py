@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.urls import reverse
 
+from .db_connect import Databese
 # from img_file.img_tif import check_tiff
 from .tiff_file import check_tiff, thumbnail
 
@@ -124,5 +126,10 @@ class Product(models.Model):
         self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
         thumbnail(self.images)
         super(Product, self).save(*args, **kwargs)
+
+
+
+
+
 
 

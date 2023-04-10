@@ -7,9 +7,7 @@ def thumbnail(file_name: str):
     with Image.open(file_name) as img:
         size = (150, 150)
         img.thumbnail(size)
-        path_preview = '/home/sasha/PycharmProjects/tif_file/printbanner/media/image/preview/' + f'thumbnail_{file_name}.jpg'
-        Databese(f'image/preview/' + f'thumbnail_{file_name}.jpg').insert_preview()
-
+        path_preview = '/home/sasha/PycharmProjects/tif_file/printbanner/media/image/preview/' + f'thumbnail_{file_name[:-4]}.jpg'
         img.save(path_preview)
 
 
