@@ -31,6 +31,8 @@ class Yadisk:
                 print(f'Копирую {i} в {local_path_yadisk}{path}')
                 shutil.move(i, f'{local_path_yadisk}{path}')
 
+
+
     def add_link_from_folder_yadisk(self, path):
         print(f'Публикую папку: {local_path_yadisk}{path}')
         ya_link = subprocess.check_output(["yandex-disk", "publish", f'{local_path_yadisk}{path}'])

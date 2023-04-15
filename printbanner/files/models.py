@@ -122,6 +122,6 @@ class Product(models.Model):
         self.width, self.length, self.resolution = check_tiff(self.images) # Читаем размеры из Tiff
         price_per_item = self.material.price
         self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
-        thumbnail(self.images)
+        # thumbnail(self.images)
         super(Product, self).save(*args, **kwargs)
 

@@ -35,21 +35,8 @@ def create_table_postgres():
 
         # Create Table
         with connection.cursor() as cursor:
-            cursor.execute(
-                """CREATE TABLE NewTest(
-                id serial PRIMARY KEY,
-                
-                quantity integer,
-                material varchar(50) NOT NULL,
-                length varchar(50) NOT NULL,
-                width varchar(50) NOT NULL,
-                dpi integer,
-                color_model varchar(50) NOT NULL,
-                size varchar(50) NOT NULL,
-                price_print money,
-                organizations varchar(50) NOT NULL
-                );"""
-            )
+            
+            
 
             print(f'Table created...')
 

@@ -2,6 +2,7 @@ import os
 
 from PIL import Image, ImageOps
 
+from printbanner.settings import BASE_DIR, MEDIA_ROOT
 
 
 def thumbnail(file_name: str):
@@ -11,7 +12,8 @@ def thumbnail(file_name: str):
     with Image.open(file_name) as img:
         size = (150, 150)
         img.thumbnail(size)
-        img.save(f'thumbnail_{file_name}.jpg')
+        folder_save = MEDIA_ROOT #os.path.join(BASE_DIR, 'media')
+        img.save(f'/{folder_save}/images/thumbnail_{file_name}.jpg')
 
 
 def check_tiff(file_name: str):
