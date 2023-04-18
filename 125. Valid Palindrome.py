@@ -51,16 +51,5 @@
 # print(longestPalindrome('avabbttbb'))
 
 
-class Car:
-    def __init__(self, color, miliage):
-        self.color = color
-        self.miliage = miliage
-    def description(self):
-        print(f' The {self.color} car has {self.miliage} miles.')
-
-blue = Car('Blue', 100)
-red = Car("RED", 200)
-print(red)
-print(red.__dict__)
-blue.description()
-blue.__str__()
+N=-3
+print([i for i in range(1, abs(N)+1)])
