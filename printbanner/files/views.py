@@ -1,3 +1,5 @@
+import os
+
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from .models import Product, Material
@@ -47,6 +49,15 @@ def delete(request, id):
     try:
         product = Product.objects.get(id=id)
         product.delete()
+        # os.remove(f'media/{str(product.images)}')
+
+        print(f'media/{str(product.images)}')
+
+        print('Удален ID', id, product.images)
+
+        # os.remove(str(product.preview_images))
+        # print('Удален preview ID', id, product.preview_images)
+
         return HttpResponseRedirect("/")
     except Product.DoesNotExist:
         return HttpResponseNotFound("<h2>Клиент не найден</h2>")
@@ -79,8 +90,8 @@ class FilesUpdateView(UpdateView):
 
 class FilesCreateView(CreateView):
     model = Product
-    # fields = ['quantity', 'material' , 'width', 'length', ]
-    fields = ("__all__")
+    fields = ['Contractor', 'quantity', 'material', 'images']
+    # fields = ("__all__")
 
 
 def price(request):
