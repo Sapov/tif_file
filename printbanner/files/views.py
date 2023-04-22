@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
-from .models import Product
+from .models import Product, Material
 from .forms import UploadFiles
 from django.views.generic.edit import CreateView, UpdateView
 
@@ -81,3 +81,8 @@ class FilesCreateView(CreateView):
     model = Product
     # fields = ['quantity', 'material' , 'width', 'length', ]
     fields = ("__all__")
+
+
+def price(request):
+    price = Material.objects.all()
+    return render(request, "price.html", {"price": price, 'title': 'sdsdsdf'})

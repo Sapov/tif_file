@@ -1,6 +1,7 @@
-{% block content %}
-
-    {% if product.count > 0 %}
+{% extends 'base.html'%}
+    <title>{% block title %} Главная страница {% endblock %}</title>
+{% block body %}
+{% if product.count > 0 %}
     <h2>Список файлов: </h2>
     <table>
         <thead>
@@ -30,4 +31,6 @@
         {% endfor %}
     </table>
     {% endif %}
-{% endblock %}
+
+
+    {% endblock %}
