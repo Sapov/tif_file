@@ -7,15 +7,14 @@ from printbanner.settings import BASE_DIR, MEDIA_ROOT
 
 def thumbnail(file_name: str):
     '''создание `thumbnail`'''
-    # for i in lst_tif:
-    # file_name = file_name[:-3]
-    print(file_name)
+
     Image.MAX_IMAGE_PIXELS = None
     with Image.open(file_name) as img:
-        size = (70, 70)
+        size = (150, 150)
         img.thumbnail(size)
-        # folder_save = MEDIA_ROOT #os.path.join(BASE_DIR, 'media')
-        img.save(f'media/preview/thumbnail_{file_name}.jpg')
+        path_preview = f'media/preview/thumbnail_{file_name}.jpg'
+        img.save(path_preview)
+        return path_preview[5:]
 
 
 def check_tiff(file_name: str):
