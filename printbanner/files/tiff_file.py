@@ -12,7 +12,7 @@ def thumbnail(file_name: str):
     with Image.open(file_name) as img:
         size = (150, 150)
         img.thumbnail(size)
-        path_preview = f'media/preview/thumbnail_{file_name}.jpg'
+        path_preview = f'media/preview/thumbnail_{str(file_name)[:-4]}.jpg'
         img.save(path_preview)
         return path_preview[5:]
 
