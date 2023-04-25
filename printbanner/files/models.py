@@ -1,8 +1,6 @@
 from django.db import models
-from django.db.models.signals import post_save
 from django.urls import reverse
 
-from .db_connect import Databese
 # from img_file.img_tif import check_tiff
 from .tiff_file import check_tiff, thumbnail
 
@@ -96,7 +94,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     images = models.FileField(upload_to='image/%d_%m_%y')
-    preview_images = models.FileField(upload_to='image/preview', blank=True, null=True, default=None)
+    preview_images = models.FileField(upload_to='image/%d_%m_%y', blank=True, null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Добавлено")  # date created
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Изменено")  # date update
 
@@ -126,10 +124,4 @@ class Product(models.Model):
         self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
         thumbnail(self.images)
         super(Product, self).save(*args, **kwargs)
-
-
-
-
-
-
 

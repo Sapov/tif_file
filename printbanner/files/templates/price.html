@@ -1,0 +1,21 @@
+{% extends 'base.html'%}
+<title>{% block title %} Прайс-лист на широкоформатную печать {% endblock %}</title>
+{% block body %}
+{% if price.count > 0 %}
+    <h2>Материалы: цена за 1 м2: </h2>
+    <table>
+        <thead>
+           <th>Id</th><th>Тип</th><th>Тип печати</th><th>Цена</th>
+       </thead>
+        {% for field in price %}
+        <tr>
+            <td>{{ field.id }}</td>
+            <td>{{ field.name }}</td>
+
+            <td>{{ field.type_print }} </td>
+            <td>{{ field.price }} руб.</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% endblock %}

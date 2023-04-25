@@ -1,6 +1,7 @@
-{% block content %}
-
-    {% if product.count > 0 %}
+{% extends 'base.html'%}
+    <title>{% block title %} Главная страница {% endblock %}</title>
+{% block body %}
+{% if product.count > 0 %}
     <h2>Список файлов: </h2>
     <table>
         <thead>
@@ -11,7 +12,7 @@
         <tr>
             <td>{{ product.id }}</td>
 <!--            <td>{{ product.name }}</td>-->
-            <td><img src="{{ product.images.url }}" width="100px"></td>
+            <td><img src="{{ product.preview_images.url }}" width="100px"></td>
             <td>{{ product.material }}</td>
             <td>{{ product.quantity }} шт.</td>
             <td>{{ product.width }} см.</td>
@@ -30,4 +31,6 @@
         {% endfor %}
     </table>
     {% endif %}
-{% endblock %}
+
+
+    {% endblock %}
