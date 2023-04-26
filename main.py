@@ -14,34 +14,13 @@ from img_file.img_tif import check_resolution
 from calculation import Banner
 
 
-def check_input_path():
-    '''
-    проверка сущестования пути
-    '''
-    flag = 0
-    while flag == 0:
-        path_dir = str(input("Введите путь к каталогу: "))
-
-        if os.path.isdir(path_dir) != True:
-            print('[INFO] Нет такого пути')
-        else:
-
-            print('[INFO] По адресу', path_dir, "cуществуют файлы", os.path.isdir(path_dir))
-            flag = 1
-            return path_dir
-
-
 def list_file(path_dir: str) -> list[str]:
     os.chdir(path_dir)  # переходим в указанный катлог
     return os.listdir()  # читаем имена файлов в список
 
 
 def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
-    tif_lst = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
-    if tif_lst != None:
-        return tif_lst
-    else:
-        print('[INFO] Нет файлов пригодных для печати')
+    return [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
 
 
 def color_mode(file_name: str) -> str:
@@ -211,7 +190,7 @@ def file_sale(file_s: str):
 
 
 def main():
-    path_dir = check_input_path()
+    path_dir = str(input("Введите путь к каталогу: "))
     client = input('Введите имя клиента: ')
     lst_files = list_file(path_dir)
     material = select_material()  # выбираем материал
@@ -234,13 +213,13 @@ def main():
     # insert_tables(text_file_name, organizations)
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
-    # --------------------------Work in Yandex Disk--------------------------------#
+#--------------------------Work in Yandex Disk--------------------------------#
     path_for_yandex_disk = f'{path_save}/{client}'  # Путь на яндекс диске для публикации
     Yadisk(path_save).create_folder()  # Создаем папку на yadisk с датой
     Yadisk(path_for_yandex_disk).create_folder()  # # Создаем папку на yadisk с клиентскими файлами
     Yadisk(path_for_yandex_disk).add_yadisk_locate()  # copy files in yadisk
     link = Yadisk(path_for_yandex_disk).add_link_from_folder_yadisk()  # Опубликовал папку получил линк
-    # -----------------------------------Work in Mail--------------------------------------#
+#-----------------------------------Work in Mail--------------------------------------#
     os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')  # перехожу в каталог яндекс диска
     with open(text_file_name) as file:  # читаю файл txt
         new_str = file.read()
