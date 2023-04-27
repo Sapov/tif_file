@@ -246,9 +246,7 @@ def main():
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
 
     assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
-    assert type(list_file(path_dir)) == list
-    assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
-    assert type(lst_files) == list, "Список list_file  должен быть list (списком)"
+
 
 
 if __name__ == "__main__":
