@@ -14,34 +14,9 @@ from img_file.img_tif import check_resolution
 from calculation import Banner
 
 
-def check_input_path():
-    '''
-    проверка сущестования пути
-    '''
-    flag = 0
-    while flag == 0:
-        path_dir = str(input("Введите путь к каталогу: "))
-
-        if os.path.isdir(path_dir) != True:
-            print('[INFO] Нет такого пути')
-        else:
-
-            print('[INFO] По адресу', path_dir, "cуществуют файлы", os.path.isdir(path_dir))
-            flag = 1
-            return path_dir
-
-
-def list_file(path_dir: str) -> list[str]:
-    os.chdir(path_dir)  # переходим в указанный катлог
-    return os.listdir()  # читаем имена файлов в список
-
-
-def only_tif(lst: list) -> list[str]:  # List whith Only TIF Files
-    tif_lst = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
-    if tif_lst != None:
-        return tif_lst
-    else:
-        print('[INFO] Нет файлов пригодных для печати')
+# def list_file(path_dir: str) -> list[str]:
+#     os.chdir(path_dir)  # переходим в указанный катлог
+#     return os.listdir()  # читаем имена файлов в список
 
 
 def color_mode(file_name: str) -> str:
@@ -210,16 +185,36 @@ def file_sale(file_s: str):
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
+def input_path() -> list[str]:
+    '''
+    Вводим путь проверяем его на существование
+    Если есть проверяем на сущестование в каталоге TIFF файлов
+    '''
+    f = 0
+    while f == 0:
+        path_dir = str(input("[INFO] Введите путь к каталогу: "))
+        if os.path.exists(path_dir):
+            print('Путь существует')
+            f = 1
+            os.chdir(path_dir)  # переходим в указанный катлог
+            lst = os.listdir()  # читаем имена файлов в список
+            lst = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
+            if lst:
+                return lst
+            else:
+                f = 0
+                print('[INFO] Файлов для печати на обнаружено')
+        else:
+            print("[INFO] Путь не существует")
+
+
 def main():
-    path_dir = check_input_path()
+    lst_tif = input_path()
     client = input('Введите имя клиента: ')
-    lst_files = list_file(path_dir)
     material = select_material()  # выбираем материал
     '''если выбран материал Баннер (любой), то предлагаем проклейку или установку люверсов'''
     # if 'Баннер' in material:
     #     print('Финишная обработка')
-
-    lst_tif = only_tif(lst_files)
 
     check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
@@ -251,7 +246,6 @@ def main():
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
 
     assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
-    assert type(path_dir) == str, 'Должна быть строка'
     assert type(list_file(path_dir)) == list
     assert type(only_tif(lst_files)) == list, "Список list_file  должен быть list (списком)"
     assert type(lst_files) == list, "Список list_file  должен быть list (списком)"

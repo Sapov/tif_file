@@ -1,11 +1,11 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
-from ya_token import gmail_pass
+from ya_token import gmail_pass, FROM_MAIL
 
 
 def send_mail(message: str, subject: str):
-    email = 'rpk.reds@gmail.com'  # ОТ КОГО
+    email = FROM_MAIL # ОТ КОГО
     password = gmail_pass
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()

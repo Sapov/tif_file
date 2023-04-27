@@ -1,7 +1,5 @@
 import psycopg2
-from config import host, user, password, dn_name
-from django.db import models
-from datetime import datetime
+from BD.config import host, user, password, dn_name
 
 
 def generate_dict():
