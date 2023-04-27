@@ -82,7 +82,8 @@ class Product(models.Model):
     )
     # author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
     Contractor = models.ForeignKey('Contractor', on_delete=models.CASCADE, verbose_name='ЗАКАЗЧИК!!')
-    material = models.ForeignKey("Material", on_delete=models.CASCADE, verbose_name='Материал')
+    material = models.ForeignKey("Material", on_delete=models.CASCADE, verbose_name='Материал',
+                                 default='2')
     quantity = models.IntegerField(default=1, help_text='Введите количество', verbose_name="Количество")
     width = models.FloatField(default=0, verbose_name="Ширина", help_text="Указывается в см.")
     length = models.FloatField(default=0, verbose_name="Длина", help_text="Указывается в см.")

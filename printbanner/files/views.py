@@ -79,8 +79,8 @@ class FilesUpdateView(UpdateView):
 
 class FilesCreateView(CreateView):
     model = Product
-    # fields = ['quantity', 'material' , 'width', 'length', ]
-    fields = ("__all__")
+    fields = ['Contractor', 'quantity', 'material', 'images']
+    # fields = ("__all__")
 
 
 def price(request):
