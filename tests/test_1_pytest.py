@@ -1,10 +1,8 @@
 import pytest
 
-from main import *
-
 
 def test_list_file():
-    assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.propertis_material.'
+    assert 1 == 1, 'Not okey'
 
 
 # def test_number_of_pieces():

@@ -13,12 +13,6 @@ import send_mail
 from img_file.img_tif import check_resolution
 from calculation import Banner
 
-
-# def list_file(path_dir: str) -> list[str]:
-#     os.chdir(path_dir)  # переходим в указанный катлог
-#     return os.listdir()  # читаем имена файлов в список
-
-
 def color_mode(file_name: str) -> str:
     Image.MAX_IMAGE_PIXELS = None
 
@@ -134,7 +128,7 @@ def rec_to_file(text_file_name: str, lst_tif: list, material):
         print(f'Итого стоимость печати: {round(itog, 2)} руб.')
 
 
-def insert_tables(text_file_name: str, organizations):
+def insert_tables(text_file_name: str, organizations, lst_tif=None):
     for i in range(len(lst_tif)):
         dict_propertis_banner = {}
 
@@ -156,7 +150,7 @@ def insert_tables(text_file_name: str, organizations):
         insert_data_in_table(dict_propertis_banner)
 
 
-def file_sale(file_s: str):
+def file_sale(file_s: str, lst_tif=None):
     itog = 0
     with open(file_s, "w") as file:
         for i in range(len(lst_tif)):
@@ -246,7 +240,6 @@ def main():
     assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
 
     assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
-
 
 
 if __name__ == "__main__":

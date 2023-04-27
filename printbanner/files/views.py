@@ -5,8 +5,6 @@ from .forms import UploadFiles
 from django.views.generic.edit import CreateView, UpdateView
 
 
-# from django.core.files.storage import FileSystemStorage
-
 
 def index(request):
     product = Product.objects.all()
@@ -74,13 +72,11 @@ class FilesUpdateView(UpdateView):
     model = Product
     fields = ("__all__")
     template_name = 'product_update_form.html'
-    # template_name_suffix = '_update_form'
 
 
 class FilesCreateView(CreateView):
     model = Product
     fields = ['Contractor', 'quantity', 'material', 'images']
-    # fields = ("__all__")
 
 
 def price(request):
