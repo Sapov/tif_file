@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 
-# from img_file.img_tif import check_tiff
 from .tiff_file import check_tiff, thumbnail
 
 
@@ -95,13 +94,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     images = models.FileField(upload_to='image/%d_%m_%y')
-    # preview_images = models.FileField(upload_to='image/%d_%m_%y', blank=True, null=True, default=None)
     preview_images = models.FileField(upload_to='preview', blank=True, null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Добавлено")  # date created
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Изменено")  # date update
-
-    # objects = models.Manager()
-    # DoesNotExist = models.Manager
 
     #
     def __str__(self):
@@ -109,22 +104,17 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('files:home')
-        # return reverse('files:update_files', args=[self.id])
 
     class Meta:
         verbose_name_plural = 'Файлы'
         verbose_name = 'Файл'
-        # ordering = ['name']
 
     def save(self, *args, **kwargs):
         ''' расчет и запись стоимость баннера'''
-        # check type file
-        # calculation
-        # preview
+
         self.width, self.length, self.resolution = check_tiff(self.images)  # Читаем размеры из Tiff
         price_per_item = self.material.price
         self.price = (self.width) / 100 * (self.length) / 100 * self.quantity * price_per_item
         print(type(self.images))
         self.preview_images = thumbnail(self.images)
-
         super(Product, self).save(*args, **kwargs)
