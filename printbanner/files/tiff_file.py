@@ -1,5 +1,6 @@
 import os
 
+import PIL
 from PIL import Image, ImageOps
 
 
@@ -12,6 +13,9 @@ def thumbnail(file_name: str):
         size = (150, 150)
         img.thumbnail(size)
         img.save(f'thumbnail_{file_name}.jpg')
+        path_preview = f'media/preview/thumbnail_{str(file_name)[:-4]}.jpg'
+        img.save(path_preview)
+        return path_preview[5:]
 
 
 def check_tiff(file_name: str):
