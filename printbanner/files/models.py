@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -79,8 +80,7 @@ class Product(models.Model):
         ('GREY', 'Greyscale'),
         ('LAB', 'lab')
     )
-    # author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
-    Contractor = models.ForeignKey('Contractor', on_delete=models.CASCADE, verbose_name='ЗАКАЗЧИК!!')
+    Contractor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='ЗАКАЗЧИК!!')
     material = models.ForeignKey("Material", on_delete=models.CASCADE, verbose_name='Материал',
                                  default='2')
     quantity = models.IntegerField(default=1, help_text='Введите количество', verbose_name="Количество")
