@@ -9,7 +9,7 @@ import img_file.img_tif
 import yandex_disk
 from yandex_disk import Yadisk, local_path_yadisk
 from pyinputplus import inputMenu
-import send_mail
+# import send_mail
 from img_file.img_tif import check_resolution
 from calculation import Banner
 
@@ -185,18 +185,17 @@ def file_sale(file_s: str):
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
-def input_path() -> list[str]:
+def input_path(path_dir) -> list[str]:
     '''
     Вводим путь проверяем его на существование
     Если есть проверяем на сущестование в каталоге TIFF файлов
     '''
     f = 0
     while f == 0:
-        path_dir = str(input("[INFO] Введите путь к каталогу: "))
         if os.path.exists(path_dir):
             print('Путь существует')
             f = 1
-            os.chdir(path_dir)  # переходим в указанный катлог
+            os.chdir(path_dir)  # переходим в указанный каталог
             lst = os.listdir()  # читаем имена файлов в список
             lst = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
             if lst:
@@ -209,6 +208,8 @@ def input_path() -> list[str]:
 
 
 def main():
+    path_dir = str(input("[INFO] Введите путь к каталогу: "))
+
     lst_tif = input_path()
     client = input('Введите имя клиента: ')
     material = select_material()  # выбираем материал
