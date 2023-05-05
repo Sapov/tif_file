@@ -6,19 +6,23 @@
     <title>{% block title %} {% endblock %}</title>
 </head>
 <body>
+           {% if request.user.is_authenticated %}
+
 <div class="container d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
       <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
         <span class="fs-4">REDS</span>
       </a>
 
       <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+
         <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/create">Загрузить файл</a>
         <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Загрузить архив</a>
         <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/price">Прайс-лист</a>
-        <a class="py-2 link-body-emphasis text-decoration-none" href="#">Ценообразование</a>
+        <a class="py-2 link-body-emphasis text-decoration-none" href="/files_dl">Мои файлы</a>
       </nav>
     </div>
 <div class="container">
+ {% endif %}
 
  {% if request.user.is_authenticated %}
  Hello {{ request.user.first_name|default:request.user.username }},
@@ -32,16 +36,19 @@
 
     {% endblock %}
 </div>
+
+ {% if request.user.is_authenticated %}
+
 <footer class="container pt-4 my-md-5 pt-md-5 border-top">
     <div class="row">
       <div class="col-12 col-md">
         <small class="d-block mb-3 text-body-secondary">© 2012–2023</small>
       </div>
       <div class="col-6 col-md">
-        <h5>Особенности</h5>
+        <h5>Профиль</h5>
         <ul class="list-unstyled text-small">
-          <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Крутой персонал</a></li>
-          <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Случайная функция</a></li>
+          <li class="mb-1"><a class="link-secondary text-decoration-none" href="edit/">Изменить профиль</a></li>
+          <li class="mb-1"><a class="link-secondary text-decoration-none" href="account/password-change/">Сменить пароль</a></li>
           <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Командная функция</a></li>
           <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Персонал для разработчиков</a></li>
           <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Другой</a></li>
@@ -68,5 +75,7 @@
       </div>
     </div>
   </footer>
+ {% endif %}
+
 </body>
 </html>

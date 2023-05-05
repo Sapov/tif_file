@@ -31,16 +31,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'account.apps.AccountConfig',
 
+    'account.apps.AccountConfig',
     'django.contrib.admin',
+
+    'files.apps.FilesConfig',
+    'orders',
+
     'django.contrib.auth',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'files.apps.FilesConfig',
-    'orders',
 
 
 

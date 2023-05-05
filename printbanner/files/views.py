@@ -16,9 +16,6 @@ def index(request):
     return render(request, "index.html", {"product": product, 'title': 'Загрузка файлов'})
 
 
-
-
-
 def delete(request, id):
     try:
         product = Product.objects.get(id=id)
@@ -47,3 +44,9 @@ class FilesCreateView(LoginRequiredMixin, CreateView):
 def price(request):
     price = Material.objects.all()
     return render(request, "price.html", {"price": price, 'title': 'sdsdsdf'})
+
+
+class FileList(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = 'index_detail.html'
+    login_url = 'login'
