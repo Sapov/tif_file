@@ -42,7 +42,8 @@ class FilesCreateView(LoginRequiredMixin, CreateView):
 
 
 def price(request):
-    price = Material.objects.all()
+    price = Material.objects.filter(type_print=1)  # Только широкоформатная печать!!!
+    # price = Material.objects.all()
     return render(request, "price.html", {"price": price, 'title': 'sdsdsdf'})
 
 
