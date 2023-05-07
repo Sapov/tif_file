@@ -29,7 +29,7 @@ class AccountViewTest(TestCase):
     def test_view_uses_correct_templates(self):
         resp = self.client.get(reverse('login'))
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'login__.html')
+        self.assertTemplateUsed(resp, 'login.html')
 
 
 

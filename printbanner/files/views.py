@@ -10,9 +10,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin  # new
 
 
 # from django.core.files.storage import FileSystemStorage
-
+@login_required
 def index(request):
-    product = Product.objects.all()
+    '''Вывод файлов толоко авторизованного пользователя'''
+    product = Product.objects.filter(Contractor=request.user)
+
     return render(request, "index.html", {"product": product, 'title': 'Загрузка файлов'})
 
 
@@ -51,3 +53,7 @@ class FileList(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'index_detail.html'
     login_url = 'login'
+
+
+# def view_files(request):
+
