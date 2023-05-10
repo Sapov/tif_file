@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-dlpfz_dn6w3hf4$wye2q(bxnlb3xw=*&^yx4^u8clo12roj0au
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -44,9 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-
-
+    # 'django.contrib.postgres',  # это модуль Django, который предоставляет интеграцию с базой данных PostgreSQL
 
 ]
 
@@ -86,14 +85,32 @@ WSGI_APPLICATION = 'printbanner.wsgi.application'
 
 
 DATABASES = {
+#
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',   # Используется PostgreSQL
+#         'NAME': 'postgres', # Имя базы данных
+#         'USER': 'postgres', # Имя пользователя
+#         'PASSWORD': 'postgres', # Пароль пользователя
+#         'HOST': 'pgdb', # Наименование контейнера для базы данных в Docker Compose
+#         'PORT': '5432',  # Порт базы данных
+#     }
+# }
+
+
+
+
+
+
+
+
 
 # 'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'HOST': '192.168.1.105',
+#         'HOST': 'pgdb',
 #         'PORT': '5432',
 #         'USER': 'sasha',
 #         'PASSWORD': '111',
-#         'NAME': 'db',
+#         'NAME': 'db2',
 #
 #     }
 # }
