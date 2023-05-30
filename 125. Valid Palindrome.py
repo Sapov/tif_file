@@ -51,5 +51,31 @@
 # print(longestPalindrome('avabbttbb'))
 
 
-N=-3
-print([i for i in range(1, abs(N)+1)])
+# def palindrom_nums(nums: int):
+#     if nums < 0 or (nums % 10 == 0 and nums != 0):
+#         return False
+#
+#     half = 0
+#     while nums > half:
+#         half = (half * 10) + nums % 10
+#         nums = nums // 10
+#     return half == nums or nums == half // 10
+#
+#
+# print(palindrom_nums(12821))
+import requests
+
+
+def download_arh(url_file):
+    response = requests.get(url_file)
+    print(response.headers['content-type'][-3:])
+    print(response.headers['content-type'])
+    print(response.text)
+
+    with open('1temp_arh.zip', 'wb') as file:
+        file.write(response.content)  # Retrieve HTTP meta-data print(r.status_code)
+
+
+download_arh(
+    # url_file='https://cloclo-stock2.datacloudmail.ru/stock/get/hkKTPxyugoZKVqXTCrA3GoykjWdUifpSrZthjGQAn4noFgGMWSQLaYCRrkQxCsgQ42d6vTxThu92/2%D1%88%D1%82_%D0%B1%D0%B0%D0%BD%D0%BD%D0%B5%D1%80_3000%D1%856000%D0%BC%D0%BC_%D0%BF%D0%BE%D0%BB%D0%B55%D1%81%D0%BC.zip?x-email=sapov%40mail.ru')
+    url_file='https://yadi.sk/d/Gtz7keThu1497w%5Cn')
