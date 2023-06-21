@@ -67,7 +67,7 @@ def check_resolution(lst_tif, material):
         if check_tiff(i)[2] > data.propertis_material.get(material)[1]:
             print("[INFO] Разрешение больше необходимого Уменьшаем!!")
             resize_image(i, data.propertis_material.get(material)[1])
-        elif check_tiff(i)[2] > data.propertis_material.get(material)[1]:
+        elif check_tiff(i)[2] == data.propertis_material.get(material)[1]:
             print('[INFO] Разрешение соответствует требованиям')
         else:
             print("[INFO] Низкое разрешение не соответствует требованиям")

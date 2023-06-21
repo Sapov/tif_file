@@ -187,7 +187,6 @@ def input_path(path_dir:str) -> list[str]:
     f = 0
     while f == 0:
         if os.path.exists(path_dir):
-            print('Путь существует')
             f = 1
             os.chdir(path_dir)  # переходим в указанный каталог
             lst = os.listdir()  # читаем имена файлов в список
