@@ -13,6 +13,7 @@ import send_mail
 from img_file.img_tif import check_resolution
 from calculation import Banner
 
+
 def color_mode(file_name: str) -> str:
     Image.MAX_IMAGE_PIXELS = None
 
@@ -62,11 +63,6 @@ def arh(list_files: list, material_name: str):  # add tif to ZIP file
             new_arh = zipfile.ZipFile(f'{material_name}_{date.today()}.zip', "a")
             new_arh.write(name, compress_type=zipfile.ZIP_DEFLATED)
             new_arh.close()
-
-
-def select_material() -> str:
-    '''Функция выбора материала для печати'''
-    return inputMenu([i for i in data.propertis_material], prompt="Выбираем материал для печати: \n", numbered=True)
 
 
 def select_oraganization():
@@ -179,33 +175,60 @@ def file_sale(file_s: str, lst_tif=None):
         print(f'Итого продажа: {round(itog, 2)} руб.')
 
 
-def input_path(path_dir:str) -> list[str]:
-    '''
-    Вводим путь проверяем его на существование
-    Если есть проверяем на сущестование в каталоге TIFF файлов
-    '''
-    f = 0
-    while f == 0:
-        if os.path.exists(path_dir):
-            f = 1
-            os.chdir(path_dir)  # переходим в указанный каталог
-            lst = os.listdir()  # читаем имена файлов в список
-            lst = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
-            if lst:
-                return lst
+class WorkFile:
+    def input_path(self: str) -> list[str]:
+        '''
+        Вводим путь проверяем его на существование
+        Если есть проверяем на сущестование в каталоге TIFF файлов
+        '''
+        f = 0
+        while f == 0:
+            # path_dir = str(input("[INFO] Введите путь к каталогу: "))
+            path_dir = '/home/sasha/Загрузки/test/'
+
+            if os.path.exists(path_dir):
+                f = 1
+                os.chdir(path_dir)  # переходим в указанный каталог
+                lst = os.listdir()  # читаем имена файлов в список
+                lst = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
+                if lst:
+                    return lst
+                else:
+                    f = 0
+                    print('[INFO] Файлов для печати на обнаружено')
             else:
-                f = 0
-                print('[INFO] Файлов для печати на обнаружено')
-        else:
-            print("[INFO] Путь не существует")
+                print("[INFO] Путь не существует")
+
+    def select_type_print(self) -> str:
+        '''Функция выбора типа печати'''
+        return inputMenu([i for i in data.type_print], prompt="Выберите тип печати: \n", numbered=True)
+
+    def select_material(self, type_print) -> str:
+        '''Функция выбора материала для печати'''
+        if type_print == 'Широкоформатная печать':
+            return inputMenu([i for i in data.propertis_material_sirka], prompt="Выбираем материал ШП  печати: \n",
+                             numbered=True)
+        elif type_print == 'Интерьерная печать':
+            return inputMenu([i for i in data.propertis_material_interierka],
+                             prompt="Выбираем материал интерьерной печати: \n", numbered=True)
+        elif type_print == 'УФ-Печать':
+            return inputMenu([i for i in data.propertis_material_interierka],
+                             prompt="Выбираем материал УФ-Печати: \n", numbered=True)
+
+    def input_client(self):
+        client = input('Введите имя клиента: ')
+        return client
 
 
 def main():
-    path_dir = str(input("[INFO] Введите путь к каталогу: "))
-
-    lst_tif = input_path(path_dir)
-    client = input('Введите имя клиента: ')
-    material = select_material()  # выбираем материал
+    a = WorkFile()
+    lst_tif = a.input_path()
+    print(lst_tif)
+    type_print = a.select_type_print()
+    print(type_print)
+    client = a.input_client()
+    material = a.select_material(type_print)  # выбираем материал
+    print(material)
     '''если выбран материал Баннер (любой), то предлагаем проклейку или установку люверсов'''
     # if 'Баннер' in material:
     #     print('Финишная обработка')
