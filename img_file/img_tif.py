@@ -26,7 +26,7 @@ def resize_image(file_name: str, new_dpi: int):
 
     except PIL.UnidentifiedImageError:
         return print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
-Решение: Photoshop / слои / выполнить сведение''')
+            Решение: Photoshop / слои / выполнить сведение''')
 
 
 def check_tiff(file_name: str):
@@ -56,21 +56,45 @@ def perimetr(width, length):
     return (width + length) * 2
 
 
-def check_resolution(lst_tif, material):
+def check_resolution(lst_tif, material, type_print):
     '''
     Проверяем разрешения и уменьшаем в соответствии со стандартом
     :param lst_tif:
     :param material:
     :return:
     '''
-    for i in lst_tif:
-        if check_tiff(i)[2] > data.propertis_material.get(material)[1]:
-            print("[INFO] Разрешение больше необходимого Уменьшаем!!")
-            resize_image(i, data.propertis_material.get(material)[1])
-        elif check_tiff(i)[2] == data.propertis_material.get(material)[1]:
-            print('[INFO] Разрешение соответствует требованиям')
-        else:
-            print("[INFO] Низкое разрешение не соответствует требованиям")
+    if type_print == 'Широкоформатная печать':
+        for i in lst_tif:
+            if check_tiff(i)[2] > data.propertis_material_sirka.get(material)[1]:
+                print("[INFO] Разрешение больше необходимого Уменьшаем!!")
+                resize_image(i, data.propertis_material_sirka.get(material)[1])
+            elif check_tiff(i)[2] == data.propertis_material_sirka.get(material)[1]:
+                print('[INFO] Разрешение соответствует требованиям')
+            else:
+                print("[INFO] Низкое разрешение не соответствует требованиям")
+
+    elif type_print == 'Интерьерная печать':
+        for i in lst_tif:
+            if check_tiff(i)[2] > data.propertis_material_interierka.get(material)[1]:
+                print("[INFO] Разрешение больше необходимого Уменьшаем!!")
+                resize_image(i, data.propertis_material_interierka.get(material)[1])
+            elif check_tiff(i)[2] == data.propertis_material_interierka.get(material)[1]:
+                print('[INFO] Разрешение соответствует требованиям')
+            else:
+                print("[INFO] Низкое разрешение не соответствует требованиям")
+
+
+    elif type_print == 'УФ-Печать':
+        for i in lst_tif:
+            if check_tiff(i)[2] > data.propertis_material_UV.get(material)[1]:
+                print("[INFO] Разрешение больше необходимого Уменьшаем!!")
+                resize_image(i, data.propertis_material_UV.get(material)[1])
+            elif check_tiff(i)[2] == data.propertis_material_UV.get(material)[1]:
+                print('[INFO] Разрешение соответствует требованиям')
+            else:
+                print("[INFO] Низкое разрешение не соответствует требованиям")
+
+
 
 
 def add_border(lst_tif: list):
@@ -92,3 +116,7 @@ def thumbnail(lst_tif: list):
             size = (150, 150)
             img.thumbnail(size)
             img.save(f'thumbnail_{i[:-4]}.jpg')
+
+
+class CheckImage:
+    pass

@@ -1,4 +1,4 @@
-class Image:
+class Check_Image:
     def check_resolution(self, lst_tif, material):
         '''
         Проверяем разрешения и уменьшаем в соответствии со стандартом

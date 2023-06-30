@@ -124,28 +124,6 @@ def rec_to_file(text_file_name: str, lst_tif: list, material):
         print(f'Итого стоимость печати: {round(itog, 2)} руб.')
 
 
-def insert_tables(text_file_name: str, organizations, lst_tif=None):
-    for i in range(len(lst_tif)):
-        dict_propertis_banner = {}
-
-        w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])  # получили длину, ширину, DPI
-        assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
-
-        # insert in table
-        dict_propertis_banner['file_name'] = lst_tif[i]  # имя файла
-        dict_propertis_banner['quantity'] = int(number_of_pieces(lst_tif[i]))  # количество
-        dict_propertis_banner['material'] = material
-        dict_propertis_banner['length'] = w_l_dpi[1]
-        dict_propertis_banner['width'] = w_l_dpi[0]
-        dict_propertis_banner['dpi'] = w_l_dpi[2]
-        dict_propertis_banner['color_model'] = color_mode(lst_tif[i])
-        dict_propertis_banner['size'] = size_file(lst_tif[i])
-        dict_propertis_banner['price_print'] = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)  # стоимость
-        dict_propertis_banner['organizations'] = organizations  # organizations
-
-        insert_data_in_table(dict_propertis_banner)
-
-
 def file_sale(file_s: str, lst_tif=None):
     itog = 0
     with open(file_s, "w") as file:
@@ -176,6 +154,15 @@ def file_sale(file_s: str, lst_tif=None):
 
 
 class WorkFile:
+    def __init__(self):
+        self.path_dir = None  # Путь к директории
+        self.lst_tif = None  # список все файлов Tiff (если такие есть)
+        self.type_print = None  # Тип печати
+        self.material = None  # Тип материала
+        self.client = None  # Имя клиента
+        self.finish_work = None  # финишная обработка
+        self.fields = None  # Поля материала
+
     def input_path(self: str) -> list[str]:
         '''
         Вводим путь проверяем его на существование
@@ -184,15 +171,16 @@ class WorkFile:
         f = 0
         while f == 0:
             # path_dir = str(input("[INFO] Введите путь к каталогу: "))
-            path_dir = '/home/sasha/Загрузки/test/'
+            # path_dir = '/home/sasha/Загрузки/test/'
+            self.path_dir = '/home/sasha/Загрузки/test/'
 
-            if os.path.exists(path_dir):
+            if os.path.exists(self.path_dir):
                 f = 1
-                os.chdir(path_dir)  # переходим в указанный каталог
+                os.chdir(self.path_dir)  # переходим в указанный каталог
                 lst = os.listdir()  # читаем имена файлов в список
-                lst = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
-                if lst:
-                    return lst
+                self.lst_tif = [i for i in lst if i.endswith('.tif') or i.endswith('.tiff')]
+                if self.lst_tif:
+                    return self.lst_tif
                 else:
                     f = 0
                     print('[INFO] Файлов для печати на обнаружено')
@@ -201,39 +189,54 @@ class WorkFile:
 
     def select_type_print(self) -> str:
         '''Функция выбора типа печати'''
-        return inputMenu([i for i in data.type_print], prompt="Выберите тип печати: \n", numbered=True)
+        self.type_print = inputMenu([k for k in data.type_print], prompt="Выберите тип печати: \n", numbered=True)
+        return self.type_print
 
-    def select_material(self, type_print) -> str:
+    def select_material(self) -> str:
         '''Функция выбора материала для печати'''
-        if type_print == 'Широкоформатная печать':
-            return inputMenu([i for i in data.propertis_material_sirka], prompt="Выбираем материал ШП  печати: \n",
-                             numbered=True)
-        elif type_print == 'Интерьерная печать':
-            return inputMenu([i for i in data.propertis_material_interierka],
-                             prompt="Выбираем материал интерьерной печати: \n", numbered=True)
-        elif type_print == 'УФ-Печать':
-            return inputMenu([i for i in data.propertis_material_interierka],
-                             prompt="Выбираем материал УФ-Печати: \n", numbered=True)
+        if self.type_print == 'Широкоформатная печать':
+            self.material = inputMenu([i for i in data.propertis_material_sirka],
+                                      prompt="Выбираем материал ШП  печати: \n",
+                                      numbered=True)
+            return self.material
+        elif self.type_print == 'Интерьерная печать':
+            self.material = inputMenu([i for i in data.propertis_material_interierka],
+                                      prompt="Выбираем материал интерьерной печати: \n", numbered=True)
+            return self.material
+
+        elif self.type_print == 'УФ-Печать':
+            self.material = inputMenu([i for i in data.propertis_material_UV],
+                                      prompt="Выбираем материал УФ-Печати: \n", numbered=True)
+            return self.material
 
     def input_client(self):
-        client = input('Введите имя клиента: ')
-        return client
+        self.client = input('Введите имя клиента: ')
+        return self.client
 
+    def finish_works(self):
+        if "Баннер" in self.material:
+            self.finish_work = inputMenu([i for i in data.finishka],
+                                         prompt="Финишная обработка баннера: \n", numbered=True)
+            return self.finish_work
+
+    def select_fields(self):
+        if "Баннер" or  "Холст" in self.material:
+            self.fields = inputMenu([i for i in data.fields],
+                                         prompt="Выбор полей: \n", numbered=True)
+            return self.fields
 
 def main():
     a = WorkFile()
-    lst_tif = a.input_path()
-    print(lst_tif)
-    type_print = a.select_type_print()
-    print(type_print)
-    client = a.input_client()
-    material = a.select_material(type_print)  # выбираем материал
-    print(material)
-    '''если выбран материал Баннер (любой), то предлагаем проклейку или установку люверсов'''
-    # if 'Баннер' in material:
-    #     print('Финишная обработка')
+    a.input_path()
+    a.select_type_print()
+    a.input_client()
+    a.select_material()  # выбираем материал
+    a.finish_works()
+    a.select_fields()
+    print(a.__dict__)
 
-    check_resolution(lst_tif, material)  # Меняем разрешение на стандарт
+
+    check_resolution(lst_tif, material, type_print)  # Меняем разрешение на стандарт
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
     # thumbnail(lst_tif) # превьюхи --
 
