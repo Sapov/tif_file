@@ -1,11 +1,9 @@
+import os
+from datetime import date
+
 import PIL
 from PIL import Image, ImageOps
 import data
-
-
-def perimetr(width, length):
-    ''' Вычисляем прериметр изображения'''
-    return (width + length) * 2
 
 
 def add_border(lst_tif: list):
@@ -73,36 +71,14 @@ class CheckImage:
         :param material:
         :return:
         '''
-        if self.type_print == 'Широкоформатная печать':
-            for i in self.lst_tif:
-                if self.check_tiff(i)[2] > data.propertis_material_sirka.get(self.material)[1]:
-                    print("[INFO] Разрешение больше необходимого Уменьшаем!!")
-                    self.resize_image(i, data.propertis_material_sirka.get(self.material)[1])
-                elif self.check_tiff(i)[2] == data.propertis_material_sirka.get(self.material)[1]:
-                    print('[INFO] Разрешение соответствует требованиям')
-                else:
-                    print("[INFO] Низкое разрешение не соответствует требованиям")
-
-        elif self.type_print == 'Интерьерная печать':
-            for i in self.lst_tif:
-                if self.check_tiff(i)[2] > data.propertis_material_interierka.get(self.material)[1]:
-                    print("[INFO] Разрешение больше необходимого Уменьшаем!!")
-                    self.resize_image(i, data.propertis_material_interierka.get(self.material)[1])
-                elif self.check_tiff(i)[2] == data.propertis_material_interierka.get(self.material)[1]:
-                    print('[INFO] Разрешение соответствует требованиям')
-                else:
-                    print("[INFO] Низкое разрешение не соответствует требованиям")
-
-
-        elif self.type_print == 'УФ-Печать':
-            for i in self.lst_tif:
-                if self.check_tiff(i)[2] > data.propertis_material_UV.get(self.material)[1]:
-                    print("[INFO] Разрешение больше необходимого Уменьшаем!!")
-                    self.resize_image(i, data.propertis_material_UV.get(self.material)[1])
-                elif self.check_tiff(i)[2] == data.propertis_material_UV.get(self.material)[1]:
-                    print('[INFO] Разрешение соответствует требованиям')
-                else:
-                    print("[INFO] Низкое разрешение не соответствует требованиям")
+        for i in self.lst_tif:
+            if self.check_tiff(i)[2] > data.type_print[self.type_print][1]:
+                print("[INFO] Разрешение больше необходимого Уменьшаем!!")
+                self.resize_image(i, data.type_print[self.type_print][1])
+            elif self.check_tiff(i)[2] == data.type_print[self.type_print][1]:
+                print('[INFO] Разрешение соответствует требованиям')
+            else:
+                print("[INFO] Низкое разрешение не соответствует требованиям")
 
     def check_tiff(self, file_name: str):
         '''
@@ -124,3 +100,84 @@ class CheckImage:
     Решение: Photoshop / слои / выполнить сведение''')
 
         return self.width, self.length, self.resolution
+
+    def perimetr(self):
+        ''' Вычисляем прериметр изображения'''
+        return (self.width + self.length) * 2
+
+    def color_mode(self, file_name) -> str:
+        Image.MAX_IMAGE_PIXELS = None
+
+        try:
+            with Image.open(file_name) as img:
+                mode = img.mode
+                if mode == 'CMYK':
+
+                    return mode
+                else:
+                    print("Цветовая модель не соответствует требованиям, нужно перевести в CMYK")
+                    return mode
+        except PIL.UnidentifiedImageError:
+            print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
+                Решение: Photoshop / слои / выполнить сведение''')
+            return mode
+
+    def number_of_pieces(self, file_name_in_list) -> int:
+        '''
+        ищем количество в имени файла указываеться после шт
+        не покрыта тестами
+        '''
+        file_name_in_list = file_name_in_list.lower()
+        if 'шт' in file_name_in_list:
+            quantity_in_name_file = file_name_in_list[:file_name_in_list.find('шт')]
+            num = ""
+            for i in range(file_name_in_list.find('шт') - 1, -1, -1):
+                # print(file_name[i])
+                if file_name_in_list[i].isdigit():
+                    num += str(file_name_in_list[i])
+                    num = num[::-1]
+            return int(num)
+        else:
+            return 1
+
+    def size_file(self, file_name) -> float:
+        # Размер в МБ
+        file_stat = os.stat(file_name)
+        return round(file_stat.st_size / (1024 * 1024), 2)
+
+    def calculation(self, width, length, material: str) -> float:
+        price_material = data.type_print[self.type_print][0]
+        print(price_material)
+        return round(width * length * price_material, 2)
+
+    # запись в текстовый файл
+    def rec_to_file(self, ):
+        text_file_name = f'{self.material}_for_print_{date.today()}.txt'
+        itog = 0
+
+        with open(text_file_name, "w") as file:
+            for i in range(len(self.lst_tif)):
+                w_l_dpi = self.check_tiff(self.lst_tif[i])
+                assert type(self.check_tiff(self.lst_tif[i])) == tuple, 'Ожидаем кортеж'
+                # P = self.perimetr(w_l_dpi[0], w_l_dpi[1])  # периметр файла
+                P = self.perimetr()  # периметр файла
+
+                file_name = f'File # {i + 1}: {self.lst_tif[i]}'
+                quantity = int(self.number_of_pieces(self.lst_tif[i]))
+                quantity_print = f'Количество: {quantity} шт.'
+                length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
+                color_model = f'Цветовая модель: {self.color_mode(self.lst_tif[i])}'
+                size = f'Размер: {self.size_file(self.lst_tif[i])} Мб'
+                price_one = self.calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, self.material)
+                square_unit = (w_l_dpi[0] * w_l_dpi[
+                    1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
+                square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
+                price = price_one * quantity
+                price_print = f'Стоимость: {price_one * quantity} руб.\n '
+                itog = itog + price
+                file.write(
+                    f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
+                file.write("-" * 40 + "\n")
+
+            file.write(f'Итого: {round(itog, 2)} руб.\n')
+            print(f'Итого стоимость печати: {round(itog, 2)} руб.')

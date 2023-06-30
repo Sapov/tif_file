@@ -14,28 +14,9 @@ from img_file.img_tif import CheckImage
 from calculation import Banner
 
 
-def color_mode(file_name: str) -> str:
-    Image.MAX_IMAGE_PIXELS = None
-
-    try:
-        with Image.open(file_name) as img:
-            mode = img.mode
-            if mode == 'CMYK':
-
-                return mode
-            else:
-                print("Цветовая модель не соответствует требованиям, нужно перевести в CMYK")
-                return mode
-    except PIL.UnidentifiedImageError:
-        print('''!!! -- Это ошибка: Не сведенный файл Tif --- !!!
-            Решение: Photoshop / слои / выполнить сведение''')
-        return mode
 
 
-def size_file(name_file: str) -> float:
-    # Размер в МБ
-    file_stat = os.stat(name_file)
-    return round(file_stat.st_size / (1024 * 1024), 2)
+
 
 
 def write_file_txt(name: str, list_text: str):
@@ -44,9 +25,7 @@ def write_file_txt(name: str, list_text: str):
         file.write(list_text)
 
 
-def calculation(width, length, material: str) -> float:
-    price_material = data.propertis_material.get(material)[0]
-    return round(width * length * price_material, 2)
+
 
 
 def calculation_for_client(width, length, material: str) -> float:
@@ -73,55 +52,9 @@ def select_oraganization():
                      numbered=True)
 
 
-def number_of_pieces(file_name_in_list: str) -> int:
-    '''
-    ищем количество в имени файла указываеться после шт
-    не покрыта тестами
-    '''
-    file_name_in_list = file_name_in_list.lower()
-    if 'шт' in file_name_in_list:
-        quantity_in_name_file = file_name_in_list[:file_name_in_list.find('шт')]
-        num = ""
-        for i in range(file_name_in_list.find('шт') - 1, -1, -1):
-            # print(file_name[i])
-            if file_name_in_list[i].isdigit():
-                num += str(file_name_in_list[i])
-                num = num[::-1]
-        return int(num)
-    else:
-        return 1
 
 
-# запись в текстовый файл
-def rec_to_file(text_file_name: str, lst_tif: list, material):
-    itog = 0
-    dict_propertis_banner = {}
 
-    with open(text_file_name, "w") as file:
-        for i in range(len(lst_tif)):
-            w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])
-            assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
-            P = img_file.img_tif.perimetr(w_l_dpi[0], w_l_dpi[1])  # периметр файла
-
-            file_name = f'File # {i + 1}: {lst_tif[i]}'
-            quantity = int(number_of_pieces(lst_tif[i]))
-            quantity_print = f'Количество: {quantity} шт.'
-            length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
-            color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
-            size = f'Размер: {size_file(lst_tif[i])} Мб'
-            price_one = calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, material)
-            square_unit = (w_l_dpi[0] * w_l_dpi[
-                1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
-            square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
-            price = price_one * quantity
-            price_print = f'Стоимость: {price_one * quantity} руб.\n '
-            itog = itog + price
-            file.write(
-                f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
-            file.write("-" * 40 + "\n")
-
-        file.write(f'Итого: {round(itog, 2)} руб.\n')
-        print(f'Итого стоимость печати: {round(itog, 2)} руб.')
 
 
 def file_sale(file_s: str, lst_tif=None):
@@ -242,9 +175,9 @@ def main():
     print(img.__dict__)
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
     # thumbnail(lst_tif) # превьюхи --
-    #----------------------Пишем файл с характеристиками-----------------------
-    text_file_name = f'{material}_for_print_{date.today()}.txt'
-    rec_to_file(text_file_name, lst_tif, material)
+        #----------------------Пишем файл с характеристиками-----------------------
+    img.rec_to_file()
+    print(img.__dict__)
 
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()

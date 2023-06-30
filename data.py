@@ -9,8 +9,8 @@ finishka = {
     'Без обработки': 0,
 }
 
-type_print = {'Широкоформатная печать': 'propertis_material_sirka',
-              'Интерьерная печать': 'propertis_material_interierka', "УФ-Печать": 'propertis_material_UV'}
+type_print = {'Широкоформатная печать': ['propertis_material_sirka', 72],
+              'Интерьерная печать': ['propertis_material_interierka', 150], "УФ-Печать": ['propertis_material_UV', 150]}
 
 propertis_material_sirka = {'Баннер 440 грамм': [165, 72, 'Баннер ламинированный 440 грамм', 280],
                             'Баннер 510 грамм': [290, 72, 'Баннер 510 грамм', 400],
