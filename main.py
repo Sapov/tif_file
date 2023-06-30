@@ -10,7 +10,7 @@ import yandex_disk
 from yandex_disk import Yadisk, local_path_yadisk
 from pyinputplus import inputMenu
 import send_mail
-from img_file.img_tif import check_resolution
+from img_file.img_tif import CheckImage
 from calculation import Banner
 
 
@@ -167,6 +167,7 @@ class WorkFile:
         '''
         Вводим путь проверяем его на существование
         Если есть проверяем на сущестование в каталоге TIFF файлов
+        выводим список тиф файлов
         '''
         f = 0
         while f == 0:
@@ -220,26 +221,28 @@ class WorkFile:
             return self.finish_work
 
     def select_fields(self):
-        if "Баннер" or  "Холст" in self.material:
+        if "Баннер" or "Холст" in self.material:
             self.fields = inputMenu([i for i in data.fields],
-                                         prompt="Выбор полей: \n", numbered=True)
+                                    prompt="Выбор полей: \n", numbered=True)
             return self.fields
 
 def main():
     a = WorkFile()
-    a.input_path()
-    a.select_type_print()
+    lst_tif = a.input_path()
+    type_print = a.select_type_print()
     a.input_client()
-    a.select_material()  # выбираем материал
+    material = a.select_material()  # выбираем материал
     a.finish_works()
     a.select_fields()
     print(a.__dict__)
 
-
-    check_resolution(lst_tif, material, type_print)  # Меняем разрешение на стандарт
+    #_________________________работа с изображением_________________________
+    img = CheckImage(type_print, lst_tif, material)
+    img.check_resolution()
+    print(img.__dict__)
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
     # thumbnail(lst_tif) # превьюхи --
-
+    #----------------------Пишем файл с характеристиками-----------------------
     text_file_name = f'{material}_for_print_{date.today()}.txt'
     rec_to_file(text_file_name, lst_tif, material)
 
