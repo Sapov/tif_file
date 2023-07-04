@@ -2,7 +2,6 @@ import os
 from datetime import date
 from pyinputplus import inputMenu
 
-
 import PIL
 from PIL import Image, ImageOps
 import data
@@ -118,8 +117,7 @@ class CheckImage:
         return self.width, self.length, self.resolution
 
     def perimetr(self):
-        ''' Вычисляем прериметр изображения'''
-        return (self.width + self.length) * 2
+        return (self.width + self.length) * 2 / 100
 
     def color_mode(self, file_name) -> str:
         Image.MAX_IMAGE_PIXELS = None
@@ -174,7 +172,7 @@ class CheckImage:
             return round(width * length * price_material, 2)
 
     # запись в текстовый файл
-    def rec_to_file(self, ):
+    def rec_to_file(self):
         print(CheckImage.__dict__)
         text_file_name = f'{self.material}_for_print_{date.today()}.txt'
         itog = 0
@@ -185,6 +183,7 @@ class CheckImage:
                 w_l_dpi = self.check_tiff(self.lst_tif[i])
                 assert type(self.check_tiff(self.lst_tif[i])) == tuple, 'Ожидаем кортеж'
                 P = self.perimetr()  # периметр файла
+                print(self.fields)
 
                 file_name = f'File # {i + 1}: {self.lst_tif[i]}'
                 quantity = int(self.number_of_pieces(self.lst_tif[i]))
@@ -193,6 +192,12 @@ class CheckImage:
                 color_model = f'Цветовая модель: {self.color_mode(self.lst_tif[i])}'
                 size = f'Размер: {self.size_file(self.lst_tif[i])} Мб'
                 price_one = self.calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, self.material)
+                if self.finish_work:
+                    f_W = round(data.finishka[self.finish_work][0] * P, 2)
+                    finish_work = f'Финишная обработка: {self.finish_work} - {f_W} руб.'
+                    price_one = price_one + f_W
+                price_one = price_one
+                finish_work = f'Финишная обработка: {"Нет"}'
                 square_unit = (w_l_dpi[0] * w_l_dpi[
                     1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
                 square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
@@ -201,7 +206,8 @@ class CheckImage:
                 itog = itog + price
 
                 file.write(
-                    f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
+                    f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{self.fields}\n{finish_work}\n{price_print}\n'
+                )
                 file.write("-" * 40 + "\n")
 
             file.write(f'Итого: {round(itog, 2)} руб.\n')

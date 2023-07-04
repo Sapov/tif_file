@@ -18,8 +18,7 @@ def write_file_txt(name: str, list_text: str):
         file.write(list_text)
 
 
-
-def arh(list_files: list, material_name: str):  # add tif to ZIP file
+def arh(list_files: list, material_name: str) -> None:  # add tif to ZIP file
     if os.path.isfile(f'{material_name}_{date.today()}.zip'):
         print('Файл уже существует, архивация пропущена')
     else:
@@ -38,35 +37,6 @@ def select_oraganization():
                      numbered=True)
 
 
-def file_sale(file_s: str, lst_tif=None):
-    itog = 0
-    with open(file_s, "w") as file:
-        for i in range(len(lst_tif)):
-            w_l_dpi = img_file.img_tif.check_tiff(lst_tif[i])
-            assert type(img_file.img_tif.check_tiff(lst_tif[i])) == tuple, 'Ожидаем кортеж'
-            file_name = f'File # {i + 1}: {lst_tif[i]}'
-            quantity = int(number_of_pieces(lst_tif[i]))
-            quantity_print = f'Количество: {quantity} шт.'
-            length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
-            square_unit = Banner(w_l_dpi[0], w_l_dpi[1]).square()  # площадь печати
-            # square_unit = (w_l_dpi[0] * w_l_dpi[
-            #     1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
-            square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
-            color_model = f'Цветовая модель: {color_mode(lst_tif[i])}'
-            size = f'Размер: {size_file(lst_tif[i])} Мб'
-            price_one = calculation_for_client(w_l_dpi[0] / 100, w_l_dpi[1] / 100,
-                                               material)  # считаем стоимость для заказчика
-            price = price_one * quantity
-            price_print = f'Стоимость: {price_one * quantity} руб.\n '
-            itog = itog + price
-            file.write(
-                f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
-            file.write("-" * 40 + "\n")
-
-        file.write(f'Итого: {round(itog, 2)} руб.\n')
-        print(f'Итого продажа: {round(itog, 2)} руб.')
-
-
 class WorkFile:
     def __init__(self):
         self.path_dir = None  # Путь к директории
@@ -74,7 +44,6 @@ class WorkFile:
         self.type_print = None  # Тип печати
         self.material = None  # Тип материала
         self.client = None  # Имя клиента
-
 
     def input_path(self: str) -> list[str]:
         '''
@@ -130,13 +99,11 @@ class WorkFile:
         return self.client
 
 
-
-
 def main():
     a = WorkFile()
     lst_tif = a.input_path()
-    type_print = a.select_type_print()
     a.input_client()
+    type_print = a.select_type_print()
     material = a.select_material()  # выбираем материал
 
     # _________________________работа с изображением_________________________
@@ -155,7 +122,7 @@ def main():
     # пишем в базу
     # insert_tables(text_file_name, organizations)
     path_save = f'{organizations}/{date.today()}'
-    zip_name = f'{material}_{date.today()}.zip'
+    # zip_name = f'{material}_{date.today()}.zip'
     # --------------------------Work in Yandex Disk--------------------------------#
     path_for_yandex_disk = f'{path_save}/{a.client}'  # Путь на яндекс диске для публикации
     Yadisk(path_save).create_folder()  # Создаем папку на yadisk с датой
