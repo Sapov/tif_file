@@ -1,5 +1,7 @@
 import os
 from datetime import date
+from pyinputplus import inputMenu
+
 
 import PIL
 from PIL import Image, ImageOps
@@ -38,6 +40,20 @@ class CheckImage:
         self.width = None  # Ширина файла
         self.length = None  # Длина файла
         self.resolution = None  # Разрешение файла
+        self.finish_work = None  # финишная обработка
+        self.fields = None  # Поля материала
+
+    def finish_works(self):
+        if "Баннер" in self.material:
+            self.finish_work = inputMenu([i for i in data.finishka],
+                                         prompt="Финишная обработка баннера: \n", numbered=True)
+            return self.finish_work
+
+    def select_fields(self):
+        if "Баннер" or "Холст" in self.material:
+            self.fields = inputMenu([i for i in data.fields],
+                                    prompt="Выбор полей: \n", numbered=True)
+            return self.fields
 
     def resize_image(file_name: str, new_dpi: int):
         '''
@@ -146,20 +162,28 @@ class CheckImage:
         return round(file_stat.st_size / (1024 * 1024), 2)
 
     def calculation(self, width, length, material: str) -> float:
-        price_material = data.type_print[self.type_print][0]
-        print(price_material)
-        return round(width * length * price_material, 2)
+        if self.type_print == 'Широкоформатная печать':
+            price_material = data.propertis_material_sirka[self.material][0]
+            return round(width * length * price_material, 2)
+        elif self.type_print == 'Интерьерная печать':
+            price_material = data.propertis_material_interierka[self.material][0]
+            return round(width * length * price_material, 2)
+
+        elif self.type_print == 'УФ-Печать':
+            price_material = data.propertis_material_UV[self.material][0]
+            return round(width * length * price_material, 2)
 
     # запись в текстовый файл
     def rec_to_file(self, ):
+        print(CheckImage.__dict__)
         text_file_name = f'{self.material}_for_print_{date.today()}.txt'
         itog = 0
 
         with open(text_file_name, "w") as file:
+            file.write(f'{"#" * 5}   {self.type_print}   {"#" * 5}\n\n')
             for i in range(len(self.lst_tif)):
                 w_l_dpi = self.check_tiff(self.lst_tif[i])
                 assert type(self.check_tiff(self.lst_tif[i])) == tuple, 'Ожидаем кортеж'
-                # P = self.perimetr(w_l_dpi[0], w_l_dpi[1])  # периметр файла
                 P = self.perimetr()  # периметр файла
 
                 file_name = f'File # {i + 1}: {self.lst_tif[i]}'
@@ -175,6 +199,7 @@ class CheckImage:
                 price = price_one * quantity
                 price_print = f'Стоимость: {price_one * quantity} руб.\n '
                 itog = itog + price
+
                 file.write(
                     f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{price_print}\n')
                 file.write("-" * 40 + "\n")

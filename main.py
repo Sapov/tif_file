@@ -14,18 +14,10 @@ from img_file.img_tif import CheckImage
 from calculation import Banner
 
 
-
-
-
-
-
 def write_file_txt(name: str, list_text: str):
     with open(f'{name}_{date.today()}.txt', "w") as file:
         # print(list_text, file=file)
         file.write(list_text)
-
-
-
 
 
 def calculation_for_client(width, length, material: str) -> float:
@@ -50,11 +42,6 @@ def select_oraganization():
          '''
     return inputMenu([i for i in data.organisations], prompt='Выбирите организацию куда отправить файлы: \n',
                      numbered=True)
-
-
-
-
-
 
 
 def file_sale(file_s: str, lst_tif=None):
@@ -93,8 +80,7 @@ class WorkFile:
         self.type_print = None  # Тип печати
         self.material = None  # Тип материала
         self.client = None  # Имя клиента
-        self.finish_work = None  # финишная обработка
-        self.fields = None  # Поля материала
+
 
     def input_path(self: str) -> list[str]:
         '''
@@ -124,15 +110,17 @@ class WorkFile:
     def select_type_print(self) -> str:
         '''Функция выбора типа печати'''
         self.type_print = inputMenu([k for k in data.type_print], prompt="Выберите тип печати: \n", numbered=True)
+
         return self.type_print
 
     def select_material(self) -> str:
-        '''Функция выбора материала для печати'''
         if self.type_print == 'Широкоформатная печать':
+            '''Функция выбора материала для печати'''
             self.material = inputMenu([i for i in data.propertis_material_sirka],
                                       prompt="Выбираем материал ШП  печати: \n",
                                       numbered=True)
             return self.material
+
         elif self.type_print == 'Интерьерная печать':
             self.material = inputMenu([i for i in data.propertis_material_interierka],
                                       prompt="Выбираем материал интерьерной печати: \n", numbered=True)
@@ -147,17 +135,8 @@ class WorkFile:
         self.client = input('Введите имя клиента: ')
         return self.client
 
-    def finish_works(self):
-        if "Баннер" in self.material:
-            self.finish_work = inputMenu([i for i in data.finishka],
-                                         prompt="Финишная обработка баннера: \n", numbered=True)
-            return self.finish_work
 
-    def select_fields(self):
-        if "Баннер" or "Холст" in self.material:
-            self.fields = inputMenu([i for i in data.fields],
-                                    prompt="Выбор полей: \n", numbered=True)
-            return self.fields
+
 
 def main():
     a = WorkFile()
@@ -165,17 +144,15 @@ def main():
     type_print = a.select_type_print()
     a.input_client()
     material = a.select_material()  # выбираем материал
-    a.finish_works()
-    a.select_fields()
-    print(a.__dict__)
 
-    #_________________________работа с изображением_________________________
+    # _________________________работа с изображением_________________________
     img = CheckImage(type_print, lst_tif, material)
+    img.finish_works()
+    img.select_fields()
     img.check_resolution()
-    print(img.__dict__)
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
     # thumbnail(lst_tif) # превьюхи --
-        #----------------------Пишем файл с характеристиками-----------------------
+    # ----------------------Пишем файл с характеристиками-----------------------
     img.rec_to_file()
     print(img.__dict__)
 
@@ -186,7 +163,7 @@ def main():
     path_save = f'{organizations}/{date.today()}'
     zip_name = f'{material}_{date.today()}.zip'
     # --------------------------Work in Yandex Disk--------------------------------#
-    path_for_yandex_disk = f'{path_save}/{client}'  # Путь на яндекс диске для публикации
+    path_for_yandex_disk = f'{path_save}/{a.client}'  # Путь на яндекс диске для публикации
     Yadisk(path_save).create_folder()  # Создаем папку на yadisk с датой
     Yadisk(path_for_yandex_disk).create_folder()  # # Создаем папку на yadisk с клиентскими файлами
     Yadisk(path_for_yandex_disk).add_yadisk_locate()  # copy files in yadisk
