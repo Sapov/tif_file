@@ -1,6 +1,4 @@
 from datetime import date
-import PIL
-from PIL import Image
 import os
 import zipfile
 import data
@@ -19,10 +17,6 @@ def write_file_txt(name: str, list_text: str):
         # print(list_text, file=file)
         file.write(list_text)
 
-
-def calculation_for_client(width, length, material: str) -> float:
-    price_material = data.propertis_material.get(material)[3]
-    return round(width * length * price_material, 2)
 
 
 def arh(list_files: list, material_name: str):  # add tif to ZIP file
