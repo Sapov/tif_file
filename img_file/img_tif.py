@@ -186,6 +186,7 @@ class CheckImage:
                 print(self.fields)
 
                 file_name = f'File # {i + 1}: {self.lst_tif[i]}'
+                self.material = f'Материал для печати: {self.material}'
                 quantity = int(self.number_of_pieces(self.lst_tif[i]))
                 quantity_print = f'Количество: {quantity} шт.'
                 length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
@@ -206,9 +207,10 @@ class CheckImage:
                 itog = itog + price
 
                 file.write(
-                    f'{file_name}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{self.fields}\n{finish_work}\n{price_print}\n'
+                    f'{file_name}\n{self.material}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{self.fields}\n{finish_work}\n{price_print}\n'
                 )
                 file.write("-" * 40 + "\n")
 
             file.write(f'Итого: {round(itog, 2)} руб.\n')
             print(f'Итого стоимость печати: {round(itog, 2)} руб.')
+            return text_file_name

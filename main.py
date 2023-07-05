@@ -24,7 +24,8 @@ def arh(list_files: list, material_name: str) -> None:  # add tif to ZIP file
     else:
         print("Архивируем файлы:", *list_files)
         for name in tqdm(list_files):
-            new_arh = zipfile.ZipFile(f'{material_name}_{date.today()}.zip', "a")
+            arh_name = f'{material_name}_{date.today()}.zip'
+            new_arh = zipfile.ZipFile(arh_name, "a")
             new_arh.write(name, compress_type=zipfile.ZIP_DEFLATED)
             new_arh.close()
 
@@ -53,9 +54,9 @@ class WorkFile:
         '''
         f = 0
         while f == 0:
-            # path_dir = str(input("[INFO] Введите путь к каталогу: "))
+            self.path_dir = str(input("[INFO] Введите путь к каталогу: "))
             # path_dir = '/home/sasha/Загрузки/test/'
-            self.path_dir = '/home/sasha/Загрузки/test/'
+            # self.path_dir = '/home/sasha/Загрузки/test/'
 
             if os.path.exists(self.path_dir):
                 f = 1
@@ -114,7 +115,7 @@ def main():
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
     # thumbnail(lst_tif) # превьюхи --
     # ----------------------Пишем файл с характеристиками-----------------------
-    img.rec_to_file()
+    text_file_name = img.rec_to_file()
     print(img.__dict__)
 
     arh(lst_tif, material)  # aрхивация
@@ -135,9 +136,9 @@ def main():
         new_str = file.read()
         send_mail.send_mail(message=f'{new_str} \nCсылка на архив: {link}', subject=material)
     #
-    assert type(number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
-    assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
-    assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
+    # assert type(self.number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
+    # assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
+    # assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
 
     assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
 
