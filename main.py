@@ -100,6 +100,7 @@ class WorkFile:
         return self.client
 
 
+
 def main():
     a = WorkFile()
     lst_tif = a.input_path()
@@ -140,7 +141,6 @@ def main():
     # assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     # assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
 
-    assert data.propertis_material.get('material', True) == True, 'Материал берется из словаря data.price_material.'
 
 
 if __name__ == "__main__":
