@@ -195,10 +195,8 @@ class CheckImage:
                 price_one = self.calculation(w_l_dpi[0] / 100, w_l_dpi[1] / 100, self.material)
                 if self.finish_work:
                     f_W = round(data.finishka[self.finish_work][0] * P, 2)
-                    finish_work = f'Финишная обработка: {self.finish_work} - {f_W} руб.'
+                    finish_work_rec_file = f'Финишная обработка: {self.finish_work} - {f_W} руб.'
                     price_one = price_one + f_W
-                price_one = price_one
-                finish_work = f'Финишная обработка: {"Нет"}'
                 square_unit = (w_l_dpi[0] * w_l_dpi[
                     1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
                 square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
@@ -207,7 +205,7 @@ class CheckImage:
                 itog = itog + price
 
                 file.write(
-                    f'{file_name}\n{self.material_txt}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{self.fields}\n{finish_work}\n{price_print}\n'
+                    f'{file_name}\n{self.material_txt}\n{quantity_print}\n{length_width}\n{square}\n{color_model}\n{size}\n{self.fields}\n{finish_work_rec_file}\n{price_print}\n'
                 )
                 file.write("-" * 40 + "\n")
 
