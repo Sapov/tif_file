@@ -111,7 +111,7 @@ def main():
     # _________________________работа с изображением_________________________
     img = CheckImage(type_print, lst_tif, material)
     img.finish_works()
-    img.select_fields()
+    img.select_fields() #Поля
     img.check_resolution()
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
     # thumbnail(lst_tif) # превьюхи --
