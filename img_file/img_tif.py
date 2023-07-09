@@ -54,7 +54,7 @@ class CheckImage:
                                     prompt="Выбор полей: \n", numbered=True)
             return self.fields
 
-    def resize_image(file_name: str, new_dpi: int):
+    def resize_image(self, file_name: str, new_dpi: int):
         '''
         :param file_name: имя файла для ресайза
         :param new_dpi: новое разрешение ресайза
