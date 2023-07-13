@@ -55,8 +55,6 @@ class WorkFile:
         f = 0
         while f == 0:
             self.path_dir = str(input("[INFO] Введите путь к каталогу: "))
-            # path_dir = '/home/sasha/Загрузки/test/'
-            # self.path_dir = '/home/sasha/Загрузки/test/'
 
             if os.path.exists(self.path_dir):
                 f = 1

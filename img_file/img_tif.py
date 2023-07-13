@@ -197,6 +197,8 @@ class CheckImage:
                     f_W = round(data.finishka[self.finish_work][0] * P, 2)
                     finish_work_rec_file = f'Финишная обработка: {self.finish_work} - {f_W} руб.'
                     price_one = price_one + f_W
+                else:
+                    finish_work_rec_file = f'Финишная обработка: НЕТ'
                 square_unit = (w_l_dpi[0] * w_l_dpi[
                     1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
                 square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
