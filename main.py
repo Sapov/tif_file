@@ -98,7 +98,6 @@ class WorkFile:
         return self.client
 
 
-
 def main():
     a = WorkFile()
     lst_tif = a.input_path()
@@ -109,27 +108,30 @@ def main():
     # _________________________работа с изображением_________________________
     img = CheckImage(type_print, lst_tif, material)
     img.finish_works()
-    img.select_fields() #Поля
+    img.select_fields()  # Поля
     img.check_resolution()
+    # __________________rename____________________
+
+    img.rename_file()
+    lst_tif = img.list_dir()
     # add_border(lst_tif)  # Делаем бордер по контуру всего файла
     # thumbnail(lst_tif) # превьюхи --
     # ----------------------Пишем файл с характеристиками-----------------------
     text_file_name = img.rec_to_file()
-    print(img.__dict__)
-
+    #
     arh(lst_tif, material)  # aрхивация
     organizations = select_oraganization()
-    # пишем в базу
-    # insert_tables(text_file_name, organizations)
+    # # пишем в базу
+    # # insert_tables(text_file_name, organizations)
     path_save = f'{organizations}/{date.today()}'
-    # zip_name = f'{material}_{date.today()}.zip'
-    # --------------------------Work in Yandex Disk--------------------------------#
+    zip_name = f'{material}_{date.today()}.zip'
+    # # --------------------------Work in Yandex Disk--------------------------------#
     path_for_yandex_disk = f'{path_save}/{a.client}'  # Путь на яндекс диске для публикации
     Yadisk(path_save).create_folder()  # Создаем папку на yadisk с датой
     Yadisk(path_for_yandex_disk).create_folder()  # # Создаем папку на yadisk с клиентскими файлами
     Yadisk(path_for_yandex_disk).add_yadisk_locate()  # copy files in yadisk
     link = Yadisk(path_for_yandex_disk).add_link_from_folder_yadisk()  # Опубликовал папку получил линк
-    # -----------------------------------Work in Mail--------------------------------------#
+    # # -----------------------------------Work in Mail--------------------------------------#
     os.chdir(f'{yandex_disk.local_path_yadisk}/{path_for_yandex_disk}')  # перехожу в каталог яндекс диска
     with open(text_file_name) as file:  # читаю файл txt
         new_str = file.read()
@@ -138,7 +140,6 @@ def main():
     # assert type(self.number_of_pieces('10штбвннерю.tif')) == int, "Возвращает число "
     # assert number_of_pieces('2штбвннерю.tif') == 2, "Возвращает число 2"
     # assert number_of_pieces('тбвннерю.tif') == 1, "Если явно не указано количество *в штуках Возвращает число 1"
-
 
 
 if __name__ == "__main__":

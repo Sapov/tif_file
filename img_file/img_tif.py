@@ -5,6 +5,7 @@ from pyinputplus import inputMenu
 import PIL
 from PIL import Image, ImageOps
 import data
+import shutil
 
 
 def add_border(lst_tif: list):
@@ -30,8 +31,10 @@ def thumbnail(lst_tif: list):
 
 class CheckImage:
     '''Работа с файлом TIFF'''
+    organisation = 'Reds'
 
     def __init__(self, type_print, lst_tif, material):
+        self.quantity = None
         self.file_name = None  # имя файла
         self.type_print = type_print  # тип печати
         self.lst_tif = lst_tif  # Список тиф файлов
@@ -41,6 +44,8 @@ class CheckImage:
         self.resolution = None  # Разрешение файла
         self.finish_work = None  # финишная обработка
         self.fields = None  # Поля материала
+        self.size = None
+        self.order = 1
 
     def finish_works(self):
         if "Баннер" in self.material:
@@ -187,8 +192,9 @@ class CheckImage:
 
                 file_name = f'File # {i + 1}: {self.lst_tif[i]}'
                 self.material_txt = f'Материал для печати: {self.material}'
-                quantity = int(self.number_of_pieces(self.lst_tif[i]))
-                quantity_print = f'Количество: {quantity} шт.'
+                self.quantity = int(self.number_of_pieces(self.lst_tif[i]))
+                print(f'QUANTITY:  {self.quantity}')
+                quantity_print = f'Количество: {self.quantity} шт.'
                 length_width = f'Ширина: {w_l_dpi[0]} см\nДлина: {w_l_dpi[1]} см\nРазрешение: {w_l_dpi[2]} dpi'
                 color_model = f'Цветовая модель: {self.color_mode(self.lst_tif[i])}'
                 size = f'Размер: {self.size_file(self.lst_tif[i])} Мб'
@@ -201,9 +207,9 @@ class CheckImage:
                     finish_work_rec_file = f'Финишная обработка: НЕТ'
                 square_unit = (w_l_dpi[0] * w_l_dpi[
                     1]) / 10000  # площадь печати одной штуки (см приводим к метрам  / 10 000
-                square = f'Площадь печати {round(square_unit * quantity, 2)} м2'  # вся площадь печати
-                price = price_one * quantity
-                price_print = f'Стоимость: {price_one * quantity} руб.\n '
+                square = f'Площадь печати {round(square_unit * self.quantity, 2)} м2'  # вся площадь печати
+                price = price_one * self.quantity
+                price_print = f'Стоимость: {price_one * self.quantity} руб.\n '
                 itog = itog + price
 
                 file.write(
@@ -214,3 +220,25 @@ class CheckImage:
             file.write(f'Итого: {round(itog, 2)} руб.\n')
             print(f'Итого стоимость печати: {round(itog, 2)} руб.')
             return text_file_name
+
+    def new_file_name(self):
+
+        self.size = f'{self.width} x {self.length}'
+        print(
+            f'НОВОЕ ИМЯ ФАЙЛА: {self.quantity}_шт_{self.size}_cм_{self.material}_order{self.order}_{self.finish_work}'
+            f'_{self.fields}_{self.organisation}_{self.numbers_file+1}')
+        return (f'{self.quantity}_шт_{self.size}_см_{self.material}_order{self.order}_{self.finish_work}_{self.fields}'
+                f'_{self.organisation}_{self.numbers_file+1}')
+
+    def rename_file(self):
+        for index, val in enumerate(self.lst_tif):
+            if val.endswith('tiff') or val.endswith('tif'):
+                self.quantity = self.number_of_pieces(val)
+                self.numbers_file = index
+                shutil.move(val, self.new_file_name() + '.tif')
+
+    def list_dir(self):
+        self.lst_tif = os.listdir()
+
+        print(self.lst_tif)
+        return self.lst_tif

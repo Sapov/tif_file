@@ -36,7 +36,7 @@ class Yadisk:
         ya_link = subprocess.check_output(["yandex-disk", "publish", f'{local_path_yadisk}{self.path}'])
         ya_link = str(ya_link)
         ya_link = ya_link.lstrip("b'")
-        ya_link = ya_link.rstrip("\n'")
+        ya_link = ya_link.rstrip(r"\n'")
         print(f'Ссылка на яндекс диск {ya_link}')
 
         return ya_link
